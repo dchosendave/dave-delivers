@@ -1,0 +1,84 @@
+:root {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #0d1117;
+  color: #00ff00;
+  /* Hacker Green */
+
+  /* 1. SOFT GLOW */
+  text-shadow: 0 0 4px rgba(0, 255, 0, 0.7);
+
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%;
+  position: relative;
+  /* Needed for overlays */
+
+  /* 4. SUBTLE FLICKER */
+  animation: flicker 0.15s infinite;
+}
+
+/* 2. SCANLINES */
+body::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  /* Thickness of lines */
+  z-index: 99;
+  pointer-events: none;
+  /* Clicks pass through */
+}
+
+/* 3. VIGNETTE (Dark Corners) */
+body::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: radial-gradient(circle,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.4) 100%);
+  z-index: 99;
+  pointer-events: none;
+}
+
+/* Animation Keyframes */
+@keyframes flicker {
+  0% {
+    opacity: 0.98;
+  }
+
+  5% {
+    opacity: 0.95;
+  }
+
+  10% {
+    opacity: 0.98;
+  }
+
+  15% {
+    opacity: 0.96;
+  }
+
+  100% {
+    opacity: 0.98;
+  }
+}
