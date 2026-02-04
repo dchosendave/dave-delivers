@@ -29,7 +29,7 @@ class CommandProcessor:
             out += "  • .NET Core / C#\n"
             out += "  • JavaScript\n"
             out += "  • SQL Server / PostgreSQL\n\n"
-            out += "but for these specific project, I used: Svelte, Python, FastAPI, and Sqlite.\n"
+            out += "but for this specific project, I used: Svelte, Python, FastAPI, and Sqlite.\n"
             out += "I'm passionate about clean code, system design, and automation.\n"
             out += "Type <span style='color:#00ff00;'>contacts</span> to get in touch!"
             
