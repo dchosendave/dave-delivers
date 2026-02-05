@@ -15,7 +15,7 @@ class CommandProcessor:
             out += "- projects: stuff i've shipped\n"
             out += "- skills: my tech arsenal and loadout\n"
             out += "- contacts: slide into my DMs\n"
-            out += "- stack: how i build this thing\n"
+            out += "- stack: how i built this thing\n"
             out += "- resume: the formal stuff adults like (PDF)\n"
             out += "- clear: wipe the slate clean\n"
             return CommandResponse(output=out, user="", path="")

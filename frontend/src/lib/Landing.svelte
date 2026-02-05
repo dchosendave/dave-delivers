@@ -6,13 +6,37 @@
     let showButtons = $state(false);
     let showPreview = $state(false);
 
+    // Theme state
+    let isDark = $state(true);
+
     onMount(() => {
+        // Load saved theme
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light") {
+            isDark = false;
+            // Ensure the class is applied immediately
+            document.documentElement.classList.add("light");
+        } else {
+            document.documentElement.classList.remove("light");
+        }
+
         // Staggered reveal animation (faster for Apple feel)
         setTimeout(() => (showName = true), 300);
         setTimeout(() => (showTagline = true), 600);
         setTimeout(() => (showButtons = true), 900);
         setTimeout(() => (showPreview = true), 1200);
     });
+
+    function toggleTheme() {
+        isDark = !isDark;
+        if (isDark) {
+            document.documentElement.classList.remove("light");
+            localStorage.setItem("theme", "dark");
+        } else {
+            document.documentElement.classList.add("light");
+            localStorage.setItem("theme", "light");
+        }
+    }
 
     function navigateTo(view) {
         const event = new CustomEvent("navigate", {
@@ -24,6 +48,11 @@
 </script>
 
 <div class="landing-wrapper">
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick={toggleTheme} title="Toggle theme">
+        {isDark ? "☀️" : "🌙"}
+    </button>
+
     <!-- Gradient Mesh Background -->
     <div class="gradient-bg"></div>
 
@@ -77,8 +106,29 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #1d1d1f;
+        background-color: var(--color-bg); /* Use variable for theme support */
         overflow: hidden;
+    }
+
+    /* ===== THEME TOGGLE ===== */
+    .theme-toggle {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        z-index: 100;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.5;
+        transition:
+            opacity 0.3s,
+            transform 0.3s;
+    }
+
+    .theme-toggle:hover {
+        opacity: 1;
+        transform: scale(1.1);
     }
 
     /* ===== ANIMATED GRADIENT BACKGROUND ===== */
@@ -105,6 +155,25 @@
             );
         animation: gradientMove 15s ease-in-out infinite;
         z-index: 0;
+    }
+
+    /* Light theme background adjustment */
+    :global(:root.light) .gradient-bg {
+        background: radial-gradient(
+                circle at 20% 80%,
+                rgba(120, 119, 198, 0.15) 0%,
+                transparent 50%
+            ),
+            radial-gradient(
+                circle at 80% 20%,
+                rgba(255, 119, 198, 0.1) 0%,
+                transparent 50%
+            ),
+            radial-gradient(
+                circle at 40% 40%,
+                rgba(90, 200, 250, 0.1) 0%,
+                transparent 40%
+            );
     }
 
     @keyframes gradientMove {
@@ -140,7 +209,7 @@
         font-size: clamp(2.5rem, 8vw, 5rem);
         font-weight: 600;
         letter-spacing: -0.02em;
-        color: #ffffff;
+        color: var(--color-text-primary); /* Use variable */
         margin: 0;
         opacity: 0;
         transform: translateY(20px);
@@ -160,7 +229,7 @@
             sans-serif;
         font-size: clamp(1rem, 2.5vw, 1.4rem);
         font-weight: 400;
-        color: #86868b;
+        color: var(--color-text-secondary); /* Use variable */
         margin: 0;
         opacity: 0;
         transform: translateY(20px);
@@ -214,13 +283,13 @@
 
     .cta-btn.secondary {
         background: transparent;
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--color-text-primary); /* Adapt to theme */
+        border: 1px solid var(--color-glass-border);
     }
 
     .cta-btn.secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.5);
+        background: var(--color-glass);
+        border-color: var(--color-text-primary);
     }
 
     /* ===== TERMINAL PREVIEW ===== */
@@ -239,6 +308,9 @@
         transform: translateY(30px);
         transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    /* Keep terminal dark or adapt? Usually terminal stays dark, but let's allow it to adapt if you want high contrast */
+    /* For now, keeping the preview persistent dark mode to look like a "Terminal" app which usually defaults to dark */
 
     .terminal-preview.visible {
         opacity: 1;
