@@ -27,7 +27,7 @@
 
     // Glitch State
     let displayedName = $state("");
-    const finalName = "Dave Dichoson";
+    const finalName = "<Dave />";
     const glitchChars = "!<>-_\\/[]{}—=+*^?#________";
 
     // Interactive State
