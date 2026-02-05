@@ -1,12 +1,14 @@
 <script>
     import { onMount } from "svelte";
     import Terminal from "./Terminal.svelte";
+    import AboutModal from "./AboutModal.svelte";
 
     // Theme state
     let isDark = $state(true);
     let currentTime = $state("");
     let showBoot = $state(true);
     let bootPhase = $state(0);
+    let showAboutModal = $state(false);
 
     onMount(() => {
         // Load saved theme
@@ -85,7 +87,12 @@
     <!-- Menu Bar -->
     <div class="menu-bar">
         <div class="menu-left">
-            <span class="menu-brand">Dave Dichoson</span>
+            <button
+                class="menu-brand-btn"
+                onclick={() => (showAboutModal = true)}
+            >
+                <span class="menu-brand">Dave Dichoson</span>
+            </button>
         </div>
         <div class="menu-right">
             <button
@@ -98,6 +105,11 @@
             <span class="menu-time">{currentTime}</span>
         </div>
     </div>
+
+    <!-- About Modal -->
+    {#if showAboutModal}
+        <AboutModal onClose={() => (showAboutModal = false)} />
+    {/if}
 
     <!-- Boot Sequence -->
     {#if showBoot}
@@ -265,6 +277,13 @@
         display: flex;
         align-items: center;
         gap: 1.5rem;
+    }
+
+    .menu-brand-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
     }
 
     .menu-brand {
