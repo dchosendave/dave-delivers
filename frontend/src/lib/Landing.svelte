@@ -2,41 +2,20 @@
     import MatrixRain from "./effects/MatrixRain.svelte";
     import { onMount } from "svelte";
 
-    // Typewriter state
-    let displayedTagline = $state("");
-    const fullTagline =
-        "Backend Developer • System Architect • Code Enthusiast";
-    let showCursor = $state(true);
-    let showContent = $state(false);
+    let showGreeting = $state(false);
+    let showName = $state(false);
+    let showTagline = $state(false);
+    let showButtons = $state(false);
 
     onMount(() => {
-        // Fade in content after a brief delay
-        setTimeout(() => {
-            showContent = true;
-        }, 300);
-
-        // Start typewriter after name appears
-        setTimeout(() => {
-            typeWriter();
-        }, 1500);
-
-        // Blinking cursor
-        const cursorInterval = setInterval(() => {
-            showCursor = !showCursor;
-        }, 530);
-
-        return () => clearInterval(cursorInterval);
+        // Staggered reveal animation
+        setTimeout(() => (showGreeting = true), 500);
+        setTimeout(() => (showName = true), 1200);
+        setTimeout(() => (showTagline = true), 2000);
+        setTimeout(() => (showButtons = true), 2800);
     });
 
-    async function typeWriter() {
-        for (let i = 0; i <= fullTagline.length; i++) {
-            displayedTagline = fullTagline.slice(0, i);
-            await new Promise((r) => setTimeout(r, 50));
-        }
-    }
-
     function navigateTo(view) {
-        // Dispatch custom event for App.svelte to handle
         const event = new CustomEvent("navigate", {
             detail: { view },
             bubbles: true,
@@ -48,32 +27,26 @@
 <div class="landing-wrapper">
     <MatrixRain />
 
-    <div class="content" class:visible={showContent}>
-        <h1 class="glitch" data-text="DAVE DICHOSON">DAVE DICHOSON</h1>
-
-        <p class="tagline">
-            {displayedTagline}<span class="cursor" class:visible={showCursor}
-                >|</span
-            >
+    <div class="content">
+        <p class="greeting" class:visible={showGreeting}>
+            H E L L O &nbsp; W O R L D
         </p>
 
-        <div class="cta-container">
-            <button
-                class="cta-btn terminal"
-                onclick={() => navigateTo("terminal")}
-            >
-                <span class="icon">🖥️</span>
-                <span class="label">Enter Terminal</span>
-            </button>
+        <h1 class="name" class:visible={showName}>
+            D A V Ǝ &nbsp; D I C H O Ƨ O И
+        </h1>
 
-            <button
-                class="cta-btn portfolio"
-                onclick={() => navigateTo("portfolio")}
-            >
-                <span class="icon">✨</span>
-                <span class="label">View Portfolio</span>
+        <p class="tagline" class:visible={showTagline}>backend developer</p>
+
+        <nav class="cta-container" class:visible={showButtons}>
+            <button class="cta-link" onclick={() => navigateTo("terminal")}>
+                Enter Terminal
             </button>
-        </div>
+            <span class="divider">/</span>
+            <button class="cta-link" onclick={() => navigateTo("portfolio")}>
+                View Portfolio
+            </button>
+        </nav>
     </div>
 </div>
 
@@ -87,169 +60,111 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #0d1117;
+        background-color: #0a0a0a;
     }
 
     .content {
         position: relative;
         z-index: 10;
         text-align: center;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 1s ease-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
-    .content.visible {
+    /* ===== GREETING ===== */
+    .greeting {
+        font-family: "Courier New", Courier, monospace;
+        font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+        font-weight: 300;
+        letter-spacing: 0.5em;
+        color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 1.5s ease-out;
+    }
+
+    .greeting.visible {
         opacity: 1;
         transform: translateY(0);
     }
 
-    /* ===== MINIMAL NAME ===== */
-    .glitch {
+    /* ===== NAME ===== */
+    .name {
         font-family: "Courier New", Courier, monospace;
-        font-size: clamp(1.5rem, 5vw, 2.5rem);
-        font-weight: 400;
-        letter-spacing: 0.3em;
-        color: rgba(255, 255, 255, 0.9);
-        position: relative;
-        text-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-        animation: subtle-glitch 5s infinite;
-    }
-
-    .glitch::before,
-    .glitch::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        font-size: clamp(1.2rem, 4vw, 2.2rem);
+        font-weight: 200;
+        letter-spacing: 0.4em;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 0.5rem 0;
         opacity: 0;
+        transform: translateY(10px);
+        transition: all 1.5s ease-out;
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
     }
 
-    .glitch::before {
-        color: #0ff;
-        animation: glitch-1 5s infinite;
-    }
-
-    .glitch::after {
-        color: #f0f;
-        animation: glitch-2 5s infinite;
-    }
-
-    @keyframes subtle-glitch {
-        0%,
-        95%,
-        100% {
-            transform: translate(0);
-        }
-        96% {
-            transform: translate(-1px, 0);
-        }
-        97% {
-            transform: translate(1px, 0);
-        }
-    }
-
-    @keyframes glitch-1 {
-        0%,
-        94%,
-        100% {
-            opacity: 0;
-            transform: translate(0);
-        }
-        95% {
-            opacity: 0.3;
-            transform: translate(-2px, 0);
-        }
-        96% {
-            opacity: 0;
-        }
-    }
-
-    @keyframes glitch-2 {
-        0%,
-        96%,
-        100% {
-            opacity: 0;
-            transform: translate(0);
-        }
-        97% {
-            opacity: 0.3;
-            transform: translate(2px, 0);
-        }
-        98% {
-            opacity: 0;
-        }
+    .name.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     /* ===== TAGLINE ===== */
     .tagline {
         font-family: "Courier New", Courier, monospace;
-        font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-        color: rgba(136, 136, 136, 0.6);
-        letter-spacing: 0.1em;
-        margin: 2rem 0 4rem;
-        min-height: 1.5em;
-    }
-
-    .cursor {
-        color: #00ff00;
+        font-size: clamp(0.5rem, 1.2vw, 0.75rem);
+        font-weight: 300;
+        letter-spacing: 0.3em;
+        color: rgba(255, 255, 255, 0.3);
+        margin: 0;
         opacity: 0;
-        transition: opacity 0.1s;
+        transform: translateY(10px);
+        transition: all 1.5s ease-out;
     }
 
-    .cursor.visible {
-        opacity: 0.6;
+    .tagline.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 
-    /* ===== MINIMAL CTA BUTTONS ===== */
+    /* ===== MINIMAL CTA LINKS ===== */
     .cta-container {
         display: flex;
-        gap: 3rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .cta-btn {
-        display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.8rem 1.5rem;
+        gap: 1rem;
+        margin-top: 3rem;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 1.5s ease-out;
+    }
+
+    .cta-container.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .cta-link {
         font-family: "Courier New", Courier, monospace;
-        font-size: 0.8rem;
-        letter-spacing: 0.05em;
+        font-size: 0.7rem;
+        font-weight: 300;
+        letter-spacing: 0.15em;
+        color: rgba(255, 255, 255, 0.35);
+        background: none;
         border: none;
-        border-radius: 0;
         cursor: pointer;
+        padding: 0.5rem 0;
         transition: all 0.3s ease;
-        background: transparent;
+        text-decoration: none;
     }
 
-    .cta-btn.terminal {
-        color: rgba(0, 255, 0, 0.5);
-        border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+    .cta-link:hover {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
-    .cta-btn.terminal:hover {
-        color: rgba(0, 255, 0, 0.9);
-        border-bottom-color: rgba(0, 255, 0, 0.6);
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-    }
-
-    .cta-btn.portfolio {
-        color: rgba(189, 94, 255, 0.5);
-        border-bottom: 1px solid rgba(189, 94, 255, 0.2);
-    }
-
-    .cta-btn.portfolio:hover {
-        color: rgba(189, 94, 255, 0.9);
-        border-bottom-color: rgba(189, 94, 255, 0.6);
-        text-shadow: 0 0 10px rgba(189, 94, 255, 0.3);
-    }
-
-    .icon {
-        font-size: 1rem;
-        opacity: 0.7;
+    .divider {
+        color: rgba(255, 255, 255, 0.15);
+        font-weight: 200;
     }
 </style>

@@ -26,11 +26,11 @@
 
         function draw() {
             // Semi-transparent black for fade trail effect
-            ctx.fillStyle = "rgba(13, 17, 23, 0.05)";
+            ctx.fillStyle = "rgba(13, 17, 23, 0.04)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Green text with subtle glow
-            ctx.fillStyle = "rgba(0, 255, 0, 0.3)";
+            ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
             ctx.font = `${fontSize}px monospace`;
 
             for (let i = 0; i < drops.length; i++) {
@@ -42,7 +42,7 @@
                 ctx.fillText(char, x, y);
 
                 // Reset to top randomly after passing screen
-                if (y > canvas.height && Math.random() > 0.99) {
+                if (y > canvas.height && Math.random() > 0.999) {
                     drops[i] = 0;
                 }
                 drops[i]++;
