@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import ParticleNetwork from "./ParticleNetwork.svelte";
 
     let showName = $state(false);
     let showTagline = $state(false);
@@ -129,6 +130,8 @@
 
     <!-- Interactive Gradient Background -->
     <div class="gradient-bg"></div>
+
+    <ParticleNetwork {isDark} />
 
     <div class="content">
         <h1 class="name" class:visible={showName}>Dave Dichoson</h1>
