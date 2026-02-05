@@ -92,7 +92,7 @@
         </div>
 
         <div class="copyright">
-            tm and © 1999-2026 Dave Dichoson Inc.<br />
+            tm and © 2000-2026 Dave Dichoson Inc.<br />
             All Rights Reserved.
         </div>
     </div>
