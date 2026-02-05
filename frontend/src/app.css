@@ -32,7 +32,7 @@
 
 /* Light theme overrides */
 :root.light {
-  --color-bg: #F5F5F7;
+  --color-bg: #F2F2F7;
   --color-bg-secondary: #FFFFFF;
   --color-text-primary: #1D1D1F;
   --color-text-secondary: #86868B;

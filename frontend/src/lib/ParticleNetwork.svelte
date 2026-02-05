@@ -44,7 +44,7 @@
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             // Use props for color (white for dark mode, dark grey for light mode)
-            const color = isDark ? "255, 255, 255" : "0, 0, 0";
+            const color = isDark ? "255, 255, 255" : "60, 60, 67";
             ctx.fillStyle = `rgba(${color}, ${this.opacity})`;
             ctx.fill();
         }
@@ -71,7 +71,7 @@
         ctx.clearRect(0, 0, width, height);
 
         const connectionDistance = 150;
-        const color = isDark ? "255, 255, 255" : "0, 0, 0";
+        const color = isDark ? "255, 255, 255" : "60, 60, 67";
 
         // Draw connections
         for (let i = 0; i < particles.length; i++) {
