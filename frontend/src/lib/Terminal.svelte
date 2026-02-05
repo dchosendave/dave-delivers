@@ -96,7 +96,7 @@
     // Welcome message with typewriter effect
     await addOutput(
       "system",
-      `<span style="color: #4facfe; font-weight: bold; font-size: 1.2em;">Welcome to Dave's Portfolio Terminal</span>
+      `<span style="color: #4facfe; font-weight: bold; font-size: 1.2em;">H E L L O  W O R L D</span>
 <span style="color: #888;">───────────────────────────────────────</span>
 Type <span style="color: #00ff00;">help</span> to see available commands.`,
     );
