@@ -81,7 +81,7 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < connectionDistance) {
-                    const opacity = (1 - distance / connectionDistance) * 0.15; // Very faint lines
+                    const opacity = (1 - distance / connectionDistance) * 0.25; // Very faint lines
                     ctx.beginPath();
                     ctx.strokeStyle = `rgba(${color}, ${opacity})`;
                     ctx.lineWidth = 1;
