@@ -12,16 +12,23 @@
     let isDark = $state(true);
 
     // Typing Effect State
-    const roles = [
-        "Backend Developer",
-        "System Architect",
-        "Database Engineer",
-        "AI Development",
-    ];
+    // const roles = [
+    //     "Backend Developer",
+    //     "System Architect",
+    //     "Database Engineer",
+    //     "AI Development",
+    // ];
+
+    let roles = $state([]);
     let currentRoleIndex = 0;
     let displayedTagline = $state("");
     let isDeleting = false;
     let typingSpeed = 100;
+
+    // Glitch State
+    let displayedName = $state("");
+    const finalName = "Dave Dichoson";
+    const glitchChars = "!<>-_\\/[]{}—=+*^?#________";
 
     // Interactive State
     let mouseX = $state(50);
@@ -39,7 +46,25 @@
             document.documentElement.classList.remove("light");
         }
 
+        // 1. DYNAMIC GREETING LOGIC
+        const hour = new Date().getHours();
+        let greeting = "Hello.";
+        if (hour < 12) greeting = "Good morning.";
+        else if (hour < 18) greeting = "Good afternoon.";
+        else greeting = "Good evening.";
+        roles = [
+            greeting, // First role is the greeting
+            "Backend Developer",
+            "System Architect",
+            "Database Engineer",
+            "AI Development",
+        ];
+
         // Staggered reveal animation
+        setTimeout(() => {
+            showName = true;
+            runGlitchEffect(); // 2. TRIGGER GLITCH
+        }, 300);
         setTimeout(() => (showName = true), 300);
         setTimeout(() => (showTagline = true), 600);
         setTimeout(() => (showButtons = true), 900);
@@ -49,6 +74,35 @@
         // Start typing loop
         typeLoop();
     });
+
+    function runGlitchEffect() {
+        // Start with the full final name
+        displayedName = finalName;
+
+        let iterations = 0;
+        const maxIterations = 15; // Shorter duration
+
+        const interval = setInterval(() => {
+            // Only glitch 1 or 2 characters at a time, keeping the rest readable
+            displayedName = finalName
+                .split("")
+                .map((letter, index) => {
+                    // 95% chance to show the correct letter, 5% glitch
+                    if (Math.random() < 0.95) {
+                        return finalName[index];
+                    }
+                    return glitchChars[
+                        Math.floor(Math.random() * glitchChars.length)
+                    ];
+                })
+                .join("");
+            if (iterations >= maxIterations) {
+                clearInterval(interval);
+                displayedName = finalName; // Ensure clean finish
+            }
+            iterations++;
+        }, 70); // Slower updates (was 30)
+    }
 
     function typeLoop() {
         const fullText = roles[currentRoleIndex];
@@ -69,7 +123,7 @@
 
         if (!isDeleting && displayedTagline === fullText) {
             isDeleting = true;
-            typingSpeed = 2000; // Pause at end
+            typingSpeed = currentRoleIndex === 0 ? 3000 : 2000; // Pause at end
         } else if (isDeleting && displayedTagline === "") {
             isDeleting = false;
             currentRoleIndex = (currentRoleIndex + 1) % roles.length;
@@ -134,7 +188,9 @@
     <ParticleNetwork {isDark} />
 
     <div class="content">
-        <h1 class="name" class:visible={showName}>Dave Dichoson</h1>
+        <h1 class="name" class:visible={showName}>
+            {displayedName}
+        </h1>
 
         <!-- Typing Tagline -->
         <p class="tagline" class:visible={showTagline}>
