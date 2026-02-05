@@ -81,13 +81,13 @@ def seed_data():
             ),
             Contact(
                 type=ContactType.viber,
-                value="Viber",
-                url="+639150833518"
+                value="+639150833518",
+                url=""
             ),
             Contact(
                 type=ContactType.whatsapp,
-                value="WhatsApp",
-                url="+639150833518"
+                value="+639150833518",
+                url=""
             )
         ]
         for c in contacts:
@@ -104,8 +104,8 @@ def seed_data():
             Experience(
                 company="EASTWEST BANKING CORP.",
                 duration="March 2023 - July 2023",
-                description="Software QA Intern who conducted manual testings, reportings, and defect tracking",
-                tech_stack=""
+                description="Software QA Intern who performed manual & automated testing on different Automatic Teller Machines",
+                tech_stack="Manual/Automated Testing, Defect Tracking, Reporting, Banking Domain, Agile/Scrum"
             )
         ]
         for e in experiences:

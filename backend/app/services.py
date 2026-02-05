@@ -24,13 +24,13 @@ class CommandProcessor:
             out += "========\n\n"
             out += "Hi, I'm <span style='color:#4facfe;font-weight:bold;'>Dave Dichoson</span>.\n\n"
             out += "I'm a <span style='color:#bd5eff;'>Backend Developer</span> with experience building\n"
-            out += "scalable APIs, database systems, and enterprise applications.\n\n"
+            out += "scalable APIs, database systems, and maintaining enterprise applications.\n\n"
             out += "My core stack includes:\n"
             out += "  • .NET Core / C#\n"
-            out += "  • JavaScript\n"
-            out += "  • SQL Server / PostgreSQL\n\n"
+            out += "  • JavaScript / TypeScript\n"
+            out += "  • SQL Server / PostgreSQL / Oracle SQL / MySQL\n\n"
             out += "but for these specific project, I used: Svelte, Python, FastAPI, and Sqlite.\n"
-            out += "I'm passionate about clean code, system design, and automation.\n"
+            out += "I'm passionate about clean code, system design, automation, and AI.\n"
             out += "Type <span style='color:#00ff00;'>contacts</span> to get in touch!"
             
             return CommandResponse(output=out, user="", path="")
