@@ -9,15 +9,15 @@ class CommandProcessor:
 
         if (command_text == "help"):
             out = "Available commands:\n"
-            out += "- help: Show this message\n"
-            out += "- about: Show information about me\n"
-            out += "- experience: Show my work experience\n"
-            out += "- projects: Show my projects\n"
-            out += "- skills: Show my skills\n"
-            out += "- contacts: Show my contact information\n"
-            out += "- resume: Show my resume\n"
-            out += "- clear: Clear the terminal\n"
-            out += "- exit: Exit the terminal\n"
+            out += "- help: you're looking at it, genius\n"
+            out += "- about: who's behind this terminal?\n"
+            out += "- experience: war stories from back in the day\n"
+            out += "- projects: stuff i've shipped\n"
+            out += "- skills: my tech arsenal and loadout\n"
+            out += "- contacts: slide into my DMs\n"
+            out += "- stack: how i build this thing\n"
+            out += "- resume: the formal stuff adults like (PDF)\n"
+            out += "- clear: wipe the slate clean\n"
             return CommandResponse(output=out, user="", path="")
         elif command_text == "about":
             out = "ABOUT ME\n"
@@ -29,7 +29,7 @@ class CommandProcessor:
             out += "  • .NET Core / C#\n"
             out += "  • JavaScript / TypeScript\n"
             out += "  • SQL Server / PostgreSQL / Oracle SQL / MySQL\n\n"
-            out += "but for these specific project, I used: Svelte, Python, FastAPI, and Sqlite.\n"
+            out += "but for this specific project, I used: Svelte, Python, FastAPI, and Sqlite.\n"
             out += "I'm passionate about clean code, system design, automation, and AI.\n"
             out += "Type <span style='color:#00ff00;'>contacts</span> to get in touch!"
             
@@ -40,11 +40,13 @@ class CommandProcessor:
                 if not projects:
                     out = "No projects found."
                 else:
-                    # Simple text formatting for now, we can make it HTML later
-                    out = "AVAILABLE PROJECTS:\n"
-                    out += "-------------------\n"
+                    out = "<span style='color:#00ff00;'>STUFF I'VE SHIPPED</span>\n"
+                    out += "━━━━━━━━━━━━━━━━━━━━\n\n"
                     for p in projects:
-                        out += f"* {p.name}: {p.description} [{p.tags}]\n"
+                        out += f"<span style='color:#4facfe;'>▸ {p.name}</span>\n"
+                        out += f"  {p.description}\n"
+                        out += f"  <span style='color:#888;'>[ {p.tags} ]</span>\n\n"
+                    out += "<span style='color:#bd5eff; font-style:italic;'>Type a project name to dive deeper... (coming soon)</span>"
             
             return CommandResponse(output=out, user="", path="")
         elif command_text == "skills":
@@ -109,13 +111,14 @@ class CommandProcessor:
                 
                 if not experiences:
                     return CommandResponse(output="No experience records found.", user="", path="")
-                out = "WORK EXPERIENCE\n"
-                out += "===============\n\n"
+                out = "<span style='color:#00ff00;'>WAR STORIES FROM THE TRENCHES</span>\n"
+                out += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
                 
                 for exp in experiences:
-                    out += f"📅 <span style='color:#4facfe;'>{exp.duration}</span> | <b>{exp.company}</b>\n"
-                    out += f"   > {exp.description}\n"
-                    out += f"   <span style='color:#888;'>[ {exp.tech_stack} ]</span>\n\n"
+                    out += f"<span style='color:#4facfe;'>⚡ {exp.company}</span>  <span style='color:#888;'>({exp.duration})</span>\n"
+                    out += f"   └─ {exp.description}\n"
+                    out += f"   <span style='color:#bd5eff;'>⚙ {exp.tech_stack}</span>\n\n"
+                out += "<span style='color:#888; font-style:italic;'>Still writing new chapters...</span>"
             return CommandResponse(output=out, user="", path="")
         elif command_text == "resume":
             out = "📄 <b>RESUME</b>\n\n"
