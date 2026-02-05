@@ -61,13 +61,22 @@
     }
 
     function resize() {
+        if (!canvas) return;
+
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
     }
 
+    function handleResize() {
+        resize();
+        init();
+    }
+
     function animate() {
+        if (!canvas || !ctx) return;
+
         ctx.clearRect(0, 0, width, height);
 
         const connectionDistance = 150;
@@ -102,6 +111,8 @@
     }
 
     onMount(() => {
+        if (!canvas) return;
+
         ctx = canvas.getContext("2d");
         window.addEventListener("resize", () => {
             resize();
@@ -113,7 +124,7 @@
 
     onDestroy(() => {
         if (typeof window !== "undefined") {
-            window.removeEventListener("resize", resize);
+            window.removeEventListener("resize", handleResize);
             cancelAnimationFrame(animationFrameId);
         }
     });

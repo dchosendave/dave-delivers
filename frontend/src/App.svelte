@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import Landing from "./lib/Landing.svelte";
     import Desktop from "./lib/Desktop.svelte";
+    import PortfolioView from "./lib/portfolio/PortfolioView.svelte";
 
     let currentView = $state("landing");
 
@@ -21,19 +22,6 @@
     {:else if currentView === "terminal"}
         <Desktop />
     {:else if currentView === "portfolio"}
-        <!-- Future: Visual Portfolio component -->
-        <div
-            style="color: #fff; text-align: center; padding-top: 40vh; font-family: 'Inter', sans-serif;"
-        >
-            <p style="font-size: 1.5rem; margin-bottom: 1rem;">
-                Visual Portfolio coming soon...
-            </p>
-            <button
-                onclick={() => (currentView = "landing")}
-                style="color: #007AFF; background: none; border: 1px solid #007AFF; padding: 0.75rem 1.5rem; cursor: pointer; border-radius: 50px; font-family: 'Inter', sans-serif;"
-            >
-                ← Back to Home
-            </button>
-        </div>
+        <PortfolioView />
     {/if}
 </main>
