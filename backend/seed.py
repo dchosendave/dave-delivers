@@ -45,8 +45,14 @@ def seed_data():
                 url="Company Internal System"
             ),
             Project(
+                name="Apple-themed Portfolio",
+                description="A modern minimalist portfolio inspired by Apple's UI/UX design",
+                tags="Svelte, FastAPI, SQLite, Python",
+                url=None
+            ),
+            Project(
                 name="Terminal Portfolio",
-                description="A retro terminal-style portfolio website",
+                description="A retro terminal-style personal portfolio website",
                 tags="Svelte, FastAPI, SQLite, Python",
                 url=None
             ),
@@ -124,6 +130,30 @@ def seed_data():
                 duration="March 2023 - July 2023",
                 description="Software QA Intern who performed manual & automated testing on different Automatic Teller Machines.",
                 tech_stack="Manual/Automated Testing, Defect Tracking, Reporting, Banking Domain, Agile/Scrum"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2022 - August 2023",
+                description="Wrote a thesis about the comparison in performance of pathfinding algorithms in a grid-based environment. Integrated it into a 2D educational game.",
+                tech_stack="Unity, C#, Pathfinding Algorithms, Sprites, UI Design, Adobe Photoshop/Premiere Pro"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2021 - May 2022",
+                description="Developed a web-based voting system for the student council.",
+                tech_stack="HTML/CSS, C#, ASP.NET Web Forms, MySQL"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2020 - May 2021",
+                description="Developed a mobile-based appointment system for a pet clinic.",
+                tech_stack="Android Studio, Java, XML UI, Firebase"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="2019",
+                description="Debugged my first program. It was a mess.",
+                tech_stack="Java, jGrasp"
             )
         ]
         for e in experiences:

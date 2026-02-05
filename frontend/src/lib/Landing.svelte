@@ -11,14 +11,6 @@
     // Theme state
     let isDark = $state(true);
 
-    // Typing Effect State
-    // const roles = [
-    //     "Backend Developer",
-    //     "System Architect",
-    //     "Database Engineer",
-    //     "AI Development",
-    // ];
-
     let roles = $state([]);
     let currentRoleIndex = 0;
     let displayedTagline = $state("");
@@ -46,12 +38,12 @@
             document.documentElement.classList.remove("light");
         }
 
-        // 1. DYNAMIC GREETING LOGIC
         const hour = new Date().getHours();
         let greeting = "Hello.";
-        if (hour < 12) greeting = "Good morning.";
-        else if (hour < 18) greeting = "Good afternoon.";
-        else greeting = "Good evening.";
+        if (hour < 12) greeting = "Had your coffee?";
+        else if (hour < 18) greeting = "You're just in time.";
+        else if (hour < 22) greeting = "Good evening.";
+        else greeting = "Staying up late?";
         roles = [
             greeting, // First role is the greeting
             "Backend Developer",

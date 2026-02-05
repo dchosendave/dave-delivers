@@ -36,9 +36,9 @@
     <!-- Content Stack -->
     <main class="max-w-7xl mx-auto px-6 py-20 flex flex-col gap-32">
         <Hero />
+        <Experience />
         <Projects />
         <Skills />
-        <Experience />
     </main>
 
     <footer class="py-12 text-center opacity-40 text-sm">
