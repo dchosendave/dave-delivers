@@ -1,89 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  font-family: 'Courier New', Courier, monospace;
-  background-color: #0d1117;
-  color: #00ff00;
-  /* Hacker Green */
+  /* Apple-style font stack */
+  --font-system: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
 
-  /* 1. SOFT GLOW */
-  text-shadow: 0 0 4px rgba(0, 255, 0, 0.7);
+  /* Apple color palette */
+  --color-bg-light: #F5F5F7;
+  --color-bg-dark: #1D1D1F;
+  --color-text-primary: #1D1D1F;
+  --color-text-secondary: #86868B;
+  --color-accent: #007AFF;
+  --color-accent-hover: #0056CC;
+
+  font-family: var(--font-system);
+  background-color: var(--color-bg-dark);
+  color: #FFFFFF;
 
   margin: 0;
   padding: 0;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-
-  --terminal-font: 'SF Mono', 'Menlo', 'JetBrains Mono', 'Monaco', 'Consolas', monospace;
 }
 
 body {
   margin: 0;
-  padding: 20px;
+  padding: 0;
   box-sizing: border-box;
   height: 100%;
   position: relative;
-  /* Needed for overlays */
-
-  /* 4. SUBTLE FLICKER */
-  animation: flicker 0.15s infinite;
 }
 
-/* 2. SCANLINES */
-body::before {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.25) 50%);
-  background-size: 100% 4px;
-  /* Thickness of lines */
-  z-index: 99;
-  pointer-events: none;
-  /* Clicks pass through */
-}
-
-/* 3. VIGNETTE (Dark Corners) */
-body::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: radial-gradient(circle,
-      rgba(0, 0, 0, 0) 60%,
-      rgba(0, 0, 0, 0.4) 100%);
-  z-index: 99;
-  pointer-events: none;
-}
-
-/* Animation Keyframes */
-@keyframes flicker {
-  0% {
-    opacity: 0.98;
-  }
-
-  5% {
-    opacity: 0.95;
-  }
-
-  10% {
-    opacity: 0.98;
-  }
-
-  15% {
-    opacity: 0.96;
-  }
-
-  100% {
-    opacity: 0.98;
-  }
-}
+/* Remove old CRT effects for Apple theme */
+/* Kept commented in case you want to toggle themes later */
+/*
+body::before { scanlines }
+body::after { vignette }
+@keyframes flicker { ... }
+*/

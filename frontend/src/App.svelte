@@ -1,7 +1,7 @@
 <script>
     import { onMount, onDestroy } from "svelte";
     import Landing from "./lib/Landing.svelte";
-    import Terminal from "./lib/Terminal.svelte";
+    import Desktop from "./lib/Desktop.svelte";
 
     let currentView = $state("landing");
 
@@ -19,16 +19,20 @@
     {#if currentView === "landing"}
         <Landing />
     {:else if currentView === "terminal"}
-        <Terminal />
+        <Desktop />
     {:else if currentView === "portfolio"}
         <!-- Future: Visual Portfolio component -->
-        <div style="color: #00ff00; text-align: center; padding-top: 40vh;">
-            <p>Visual Portfolio coming soon...</p>
+        <div
+            style="color: #fff; text-align: center; padding-top: 40vh; font-family: 'Inter', sans-serif;"
+        >
+            <p style="font-size: 1.5rem; margin-bottom: 1rem;">
+                Visual Portfolio coming soon...
+            </p>
             <button
                 onclick={() => (currentView = "landing")}
-                style="color: #4facfe; background: none; border: 1px solid #4facfe; padding: 0.5rem 1rem; cursor: pointer; margin-top: 1rem;"
+                style="color: #007AFF; background: none; border: 1px solid #007AFF; padding: 0.75rem 1.5rem; cursor: pointer; border-radius: 50px; font-family: 'Inter', sans-serif;"
             >
-                ← Back to Landing
+                ← Back to Home
             </button>
         </div>
     {/if}
