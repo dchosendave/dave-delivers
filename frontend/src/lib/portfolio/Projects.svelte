@@ -1,6 +1,14 @@
 <script>
     import { onMount } from "svelte";
 
+    /**
+     * IMPORT ANIMATIONS
+     * - fadeIn: For section header
+     * - scaleIn: For project cards (looks great on cards!)
+     * - staggerDelay: To make cards appear one by one
+     */
+    import { fadeIn, scaleIn, staggerDelay } from "../animations.js";
+
     let projects = [];
 
     onMount(async () => {
@@ -13,48 +21,53 @@
     });
 </script>
 
-<section class="space-y-12">
+<section class="projects-section">
     <!-- Section Header -->
-    <div class="space-y-4">
-        <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-white">
-            Selected Works
-        </h2>
-        <p class="text-lg text-slate-400 max-w-2xl font-light">
+    <!--
+        ANIMATION: Fade in the header when it enters viewport
+        This creates a nice introduction to the Projects section
+    -->
+    <div class="section-header" use:fadeIn>
+        <h2 class="section-title">Selected Works</h2>
+        <p class="section-description">
             A collection of systems, APIs, and tools I've engineered.
         </p>
     </div>
 
     <!-- Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each projects as project}
+    <!--
+        ANIMATION: Each project card scales in with a staggered delay
+        - Card 0: 0ms delay
+        - Card 1: 150ms delay  
+        - Card 2: 300ms delay
+        - Creates a cascading "pop-in" effect as you scroll
+        
+        Why scaleIn? Cards growing into view feels more natural than sliding
+    -->
+    <div class="projects-grid">
+        {#each projects as project, i}
             <!-- Card -->
             <div
-                class="group relative flex flex-col justify-between p-8 rounded-[2rem]
-                       bg-white/5 backdrop-blur-xl border border-white/5
-                       hover:bg-white/10 hover:border-white/10 hover:-translate-y-1
-                       transition-all duration-300 ease-out shadow-2xl shadow-black/20"
+                class="project-card"
+                use:scaleIn={{ delay: staggerDelay(i, 150) }}
             >
                 <div>
                     <!-- Title -->
-                    <h3
-                        class="text-2xl font-semibold text-white mb-3 group-hover:text-blue-400 transition-colors"
-                    >
+                    <h3 class="project-title">
                         {project.name}
                     </h3>
 
                     <!-- Description -->
-                    <p class="text-slate-400 leading-relaxed mb-6 font-light">
+                    <p class="project-description">
                         {project.description}
                     </p>
                 </div>
 
-                <div class="space-y-6">
+                <div class="project-footer">
                     <!-- Tech Stack Pills -->
-                    <div class="flex flex-wrap gap-2">
+                    <div class="tech-tags">
                         {#each project.tags.split(",") as tag}
-                            <span
-                                class="px-3 py-1 text-xs font-medium tracking-wide text-blue-200 bg-blue-500/10 rounded-full border border-blue-500/20"
-                            >
+                            <span class="tech-tag">
                                 {tag.trim()}
                             </span>
                         {/each}
@@ -65,11 +78,11 @@
                         <a
                             href={project.url}
                             target="_blank"
-                            class="inline-flex items-center text-sm font-semibold text-white/50 hover:text-white transition-colors"
+                            class="project-link"
                         >
                             View Source
                             <svg
-                                class="w-4 h-4 ml-1 opacity-50"
+                                class="link-arrow"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -87,3 +100,131 @@
         {/each}
     </div>
 </section>
+
+<style>
+    .projects-section {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .section-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .section-title {
+        font-size: clamp(2.25rem, 5vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--color-text-primary);
+    }
+
+    .section-description {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        max-width: 42rem;
+        font-weight: 300;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .projects-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 2rem;
+        border-radius: 2rem;
+        background: var(--color-surface);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--color-glass-border);
+        transition: all 0.3s ease-out;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .project-card:hover {
+        background: var(--color-glass);
+        border-color: var(--color-glass-border);
+        transform: translateY(-4px);
+    }
+
+    .project-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: 0.75rem;
+        transition: color 0.3s;
+    }
+
+    .project-card:hover .project-title {
+        color: #60a5fa;
+    }
+
+    .project-description {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-weight: 300;
+    }
+
+    .project-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tech-tag {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        color: #93c5fd;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 9999px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .project-link {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .project-link:hover {
+        color: var(--color-text-primary);
+    }
+
+    .link-arrow {
+        width: 1rem;
+        height: 1rem;
+        margin-left: 0.25rem;
+        opacity: 0.5;
+    }
+</style>

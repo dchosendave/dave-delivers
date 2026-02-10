@@ -154,12 +154,19 @@
         }
     }
 
+    /**
+     * NAVIGATION FUNCTION - Updated for URL routing
+     * Now uses the router to change URLs properly
+     */
+    import { navigate } from "./router.js";
+
     function navigateTo(view) {
-        const event = new CustomEvent("navigate", {
-            detail: { view },
-            bubbles: true,
-        });
-        document.dispatchEvent(event);
+        // Map view names to URL paths
+        const paths = {
+            terminal: "/desktop",
+            portfolio: "/get-to-know-me",
+        };
+        navigate(paths[view] || "/");
     }
 </script>
 

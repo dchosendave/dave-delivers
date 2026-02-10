@@ -1,19 +1,27 @@
 <script>
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import Landing from "./lib/Landing.svelte";
     import Desktop from "./lib/Desktop.svelte";
     import PortfolioView from "./lib/portfolio/PortfolioView.svelte";
 
-    let currentView = $state("landing");
+    /**
+     * ROUTER SETUP
+     * Import our hash-based router
+     */
+    import {
+        currentRoute,
+        initRouter,
+        getViewFromRoute,
+    } from "./lib/router.js";
 
-    function handleNavigate(event) {
-        currentView = event.detail.view;
-    }
-
+    // Initialize router on app load
     onMount(() => {
-        document.addEventListener("navigate", handleNavigate);
-        return () => document.removeEventListener("navigate", handleNavigate);
+        initRouter();
     });
+
+    // Derive current view from route
+    // This automatically updates when route changes
+    $: currentView = getViewFromRoute($currentRoute);
 </script>
 
 <main>

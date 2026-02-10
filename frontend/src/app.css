@@ -3,19 +3,21 @@
 @import "tailwindcss";
 
 :root {
-  /* Font stacks */
-  --font-system: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  /* Apple-style Font stacks */
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, 'Inter', sans-serif;
+  --font-mono: ui-monospace, "SF Mono", 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
 
   /* Default: Dark theme */
   --color-bg: #1D1D1F;
   --color-bg-secondary: #2C2C2E;
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #86868B;
+  --color-text-tertiary: #48484A;
   --color-accent: #007AFF;
   --color-accent-hover: #0056CC;
   --color-glass: rgba(255, 255, 255, 0.1);
   --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-surface: rgba(255, 255, 255, 0.05);
   --color-terminal-bg: #0d1117;
   --color-terminal-text: #00ff00;
 
@@ -33,18 +35,20 @@
 /* Light theme overrides */
 :root.light {
   /* A distinct light gray, clearly separating it from white elements */
-  --color-bg: #EEF0F2;
+  --color-bg: #F5F5F7;
 
   /* Still keep content areas white */
   --color-bg-secondary: #FFFFFF;
 
-  /* Slightly darker text for the increased background contrast */
-  --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
+  /* Dark text for light backgrounds */
+  --color-text-primary: #1D1D1F;
+  --color-text-secondary: #6E6E73;
+  --color-text-tertiary: #86868B;
 
-  /* Darker glass tint */
-  --color-glass: rgba(240, 240, 245, 0.5);
-  --color-glass-border: rgba(0, 0, 0, 0.12);
+  /* Light theme glass effects */
+  --color-glass: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --color-surface: rgba(0, 0, 0, 0.03);
 }
 
 /* Smooth theme transitions */

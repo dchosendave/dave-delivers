@@ -1,6 +1,14 @@
 <script>
     import { onMount } from "svelte";
 
+    /**
+     * IMPORT ANIMATIONS
+     * - fadeIn: For header
+     * - slideInLeft: Perfect for timeline items!
+     *   (Makes them slide in from left, following the timeline flow)
+     */
+    import { fadeIn, slideInLeft, staggerDelay } from "../animations.js";
+
     let experiences = [];
 
     onMount(async () => {
@@ -13,53 +21,53 @@
     });
 </script>
 
-<section class="space-y-12">
+<section class="experience-section">
     <!-- Header -->
-    <div class="space-y-4">
-        <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-white">
-            Experience
-        </h2>
-        <p class="text-lg text-slate-400 max-w-2xl font-light">
+    <!--
+        ANIMATION: Fade in header
+    -->
+    <div class="section-header" use:fadeIn>
+        <h2 class="section-title">Experience</h2>
+        <p class="section-description">
             My professional journey and key contributions.
         </p>
     </div>
 
     <!-- Timeline Container -->
-    <div class="relative border-l border-white/10 ml-3 md:ml-6 space-y-12 pb-4">
-        {#each experiences as exp}
-            <div class="relative pl-8 md:pl-12 group">
+    <!--
+        ANIMATION: Each timeline item slides in from left with stagger
+        Why slideInLeft? Because the timeline has a left border
+        Items sliding from left follows the visual flow of the timeline
+        Creates a natural "filling in history" effect
+    -->
+    <div class="timeline-container">
+        {#each experiences as exp, i}
+            <div
+                class="timeline-item"
+                use:slideInLeft={{ delay: staggerDelay(i, 120) }}
+            >
                 <!-- Timeline Dot (Glows on hover) -->
-                <div
-                    class="absolute -left-[5px] top-2 w-3 h-3 rounded-full bg-slate-600 border border-slate-900 group-hover:bg-blue-500 group-hover:scale-125 transition-all duration-300 shadow-[0_0_10px_rgba(59,130,246,0)] group-hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                ></div>
+                <div class="timeline-dot"></div>
 
                 <!-- Content Card -->
-                <div
-                    class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2"
-                >
-                    <h3
-                        class="text-2xl font-semibold text-white group-hover:text-blue-400 transition-colors"
-                    >
+                <div class="exp-header">
+                    <h3 class="exp-company">
                         {exp.company}
                     </h3>
-                    <span
-                        class="text-sm font-medium text-slate-500 font-mono bg-white/5 px-2 py-1 rounded-md"
-                    >
+                    <span class="exp-duration">
                         {exp.duration}
                     </span>
                 </div>
 
-                <div class="space-y-4">
-                    <p
-                        class="text-slate-400 leading-relaxed font-light max-w-3xl"
-                    >
+                <div class="exp-content">
+                    <p class="exp-description">
                         {exp.description}
                     </p>
 
                     <!-- Tech Stack (Minimal text representation) -->
-                    <div class="flex items-center gap-3 text-sm text-slate-500">
-                        <span class="w-4 h-[1px] bg-slate-700"></span>
-                        <span class="font-medium text-slate-400 tracking-wide">
+                    <div class="exp-tech">
+                        <span class="tech-divider"></span>
+                        <span class="tech-stack">
                             {exp.tech_stack}
                         </span>
                     </div>
@@ -68,3 +76,144 @@
         {/each}
     </div>
 </section>
+
+<style>
+    .experience-section {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .section-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .section-title {
+        font-size: clamp(2.25rem, 5vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--color-text-primary);
+    }
+
+    .section-description {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        max-width: 42rem;
+        font-weight: 300;
+    }
+
+    .timeline-container {
+        position: relative;
+        border-left: 1px solid var(--color-glass-border);
+        margin-left: 0.75rem;
+        padding-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+        .timeline-container {
+            margin-left: 1.5rem;
+        }
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        .timeline-item {
+            padding-left: 3rem;
+        }
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -5px;
+        top: 0.5rem;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+        background: var(--color-text-tertiary);
+        border: 1px solid var(--color-bg);
+        transition: all 0.3s;
+    }
+
+    .timeline-item:hover .timeline-dot {
+        background: #60a5fa;
+        transform: scale(1.25);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .exp-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .exp-header {
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+    }
+
+    .exp-company {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        transition: color 0.3s;
+    }
+
+    .timeline-item:hover .exp-company {
+        color: #60a5fa;
+    }
+
+    .exp-duration {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-primary);
+        font-family: var(--font-mono);
+        background: var(--color-surface);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        width: fit-content;
+    }
+
+    .exp-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .exp-description {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        font-weight: 300;
+        max-width: 48rem;
+    }
+
+    .exp-tech {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+        color: var(--color-text-tertiary);
+    }
+
+    .tech-divider {
+        width: 1rem;
+        height: 1px;
+        background: var(--color-glass-border);
+    }
+
+    .tech-stack {
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        letter-spacing: 0.025em;
+    }
+</style>
