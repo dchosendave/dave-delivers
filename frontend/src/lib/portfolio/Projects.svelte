@@ -13,7 +13,7 @@
 
     onMount(async () => {
         try {
-            const res = await fetch("http://localhost:8000/projects");
+            const res = await fetch("/api/projects");
             projects = await res.json();
         } catch (err) {
             console.error(err);

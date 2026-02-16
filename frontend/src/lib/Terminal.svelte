@@ -17,7 +17,7 @@
   let isProcessing = $state<boolean>(false);
   let isTyping = $state<boolean>(false);
 
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = "/api"; // SvelteKit API routes (no CORS needed)
   const TYPING_SPEED = 8;
   const TYPING_ENABLED = true;
 
