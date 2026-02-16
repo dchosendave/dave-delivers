@@ -207,7 +207,7 @@
             {/if}
             {#if bootPhase >= 2}
                 <p class="boot-loading">
-                    Initializing terminal<span class="dots">...</span>
+                    Initializing Desktop<span class="dots">...</span>
                 </p>
             {/if}
         </div>
