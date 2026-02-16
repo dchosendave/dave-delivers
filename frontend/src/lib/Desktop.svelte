@@ -1,8 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
     import Terminal from "./Terminal.svelte";
     import AboutModal from "./AboutModal.svelte";
     import ISSTracker from "./ISSTracker.svelte";
+    import Window from "./Window.svelte";
+    import type {
+        WindowType,
+        WindowState,
+        WindowConfig,
+    } from "./types/window-types";
 
     // Theme state
     let isDark = $state(true);
@@ -10,7 +17,11 @@
     let showBoot = $state(true);
     let bootPhase = $state(0);
     let showAboutModal = $state(false);
-    let showISSTracker = $state(false);
+
+    // Window management state
+    let openWindows = $state<WindowState[]>([]);
+    let activeWindowId = $state<WindowType | null>(null);
+    let nextZIndex = $state(100);
 
     onMount(() => {
         // Load saved theme
@@ -69,7 +80,74 @@
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    import { goto } from "$app/navigation";
+    // Window Management Functions
+    function getWindowConfig(type: WindowType): WindowConfig {
+        switch (type) {
+            case "terminal":
+                return {
+                    id: "terminal",
+                    title: "Terminal",
+                    icon: "⌘",
+                };
+            case "iss-tracker":
+                return {
+                    id: "iss-tracker",
+                    title: "ISS Live Tracker",
+                    icon: "🛰️",
+                };
+        }
+    }
+
+    function openWindow(type: WindowType) {
+        // Check if already open
+        const existing = openWindows.find((w) => w.id === type);
+        if (existing) {
+            // Just focus it
+            focusWindow(type);
+            if (existing.isMinimized) {
+                existing.isMinimized = false;
+            }
+            return;
+        }
+
+        // Create new window
+        const config = getWindowConfig(type);
+        openWindows.push({
+            ...config,
+            isMinimized: false,
+            zIndex: nextZIndex++,
+        });
+        activeWindowId = type;
+    }
+
+    function closeWindow(id: WindowType) {
+        openWindows = openWindows.filter((w) => w.id !== id);
+        if (activeWindowId === id) {
+            // Focus next visible window
+            const visibleWindows = openWindows.filter((w) => !w.isMinimized);
+            activeWindowId =
+                visibleWindows[visibleWindows.length - 1]?.id ?? null;
+        }
+    }
+
+    function minimizeWindow(id: WindowType) {
+        const window = openWindows.find((w) => w.id === id);
+        if (window) {
+            window.isMinimized = true;
+            // Focus next visible window
+            const visibleWindows = openWindows.filter((w) => !w.isMinimized);
+            activeWindowId =
+                visibleWindows[visibleWindows.length - 1]?.id ?? null;
+        }
+    }
+
+    function focusWindow(id: WindowType) {
+        const window = openWindows.find((w) => w.id === id);
+        if (window) {
+            window.zIndex = nextZIndex++;
+            activeWindowId = id;
+        }
+    }
 
     function navigateTo(view: string) {
         const paths: Record<string, string> = {
@@ -134,9 +212,17 @@
             {/if}
         </div>
     {:else}
-        <!-- Terminal Window -->
-        <div class="terminal-area">
-            <Terminal />
+        <!-- Desktop Area (starts empty) -->
+        <div class="desktop-area">
+            {#each openWindows as window (window.id)}
+                <Window
+                    {window}
+                    isActive={activeWindowId === window.id}
+                    onClose={() => closeWindow(window.id)}
+                    onMinimize={() => minimizeWindow(window.id)}
+                    onFocus={() => focusWindow(window.id)}
+                />
+            {/each}
         </div>
     {/if}
 
@@ -153,8 +239,17 @@
 
             <div class="dock-divider"></div>
 
-            <button class="dock-item active" title="Terminal">
+            <!-- Terminal -->
+            <button
+                class="dock-item"
+                class:active={openWindows.some((w) => w.id === "terminal")}
+                onclick={() => openWindow("terminal")}
+                title="Terminal"
+            >
                 <span class="dock-icon">💻</span>
+                {#if openWindows.some((w) => w.id === "terminal")}
+                    <div class="dock-indicator"></div>
+                {/if}
             </button>
 
             <button
@@ -215,18 +310,18 @@
             <!-- ISS Tracker -->
             <button
                 class="dock-item"
-                onclick={() => (showISSTracker = true)}
+                class:active={openWindows.some((w) => w.id === "iss-tracker")}
+                onclick={() => openWindow("iss-tracker")}
                 title="ISS Live Tracker"
             >
                 <span class="dock-icon">🛰️</span>
+                {#if openWindows.some((w) => w.id === "iss-tracker")}
+                    <div class="dock-indicator"></div>
+                {/if}
             </button>
         </div>
     </div>
 </div>
-
-{#if showISSTracker}
-    <ISSTracker onClose={() => (showISSTracker = false)} />
-{/if}
 
 <style>
     .desktop-wrapper {
@@ -416,17 +511,11 @@
         }
     }
 
-    /* ===== TERMINAL AREA ===== */
-    .terminal-area {
+    /* ===== DESKTOP AREA ===== */
+    .desktop-area {
         position: relative;
         z-index: 10;
         flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        padding-top: 1rem;
-        padding-bottom: 100px;
         animation: fadeIn 0.5s ease;
     }
 
@@ -488,6 +577,30 @@
 
     .dock-icon {
         font-size: 1.75rem;
+    }
+
+    .dock-indicator {
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+        0%,
+        100% {
+            opacity: 0.8;
+        }
+        50% {
+            opacity: 1;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
     }
 
     .dock-divider {

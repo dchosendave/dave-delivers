@@ -153,206 +153,89 @@
     }
 </script>
 
-<div class="iss-tracker-overlay">
-    <div class="iss-tracker-window">
-        <!-- macOS Window Header -->
-        <div class="window-header">
-            <div class="window-controls">
-                <button
-                    class="control-btn close"
-                    onclick={onClose}
-                    title="Close"
-                ></button>
-                <button class="control-btn minimize" title="Minimize"></button>
-                <button class="control-btn maximize" title="Maximize"></button>
-            </div>
-            <div class="window-title">
-                <span class="title-icon">🛰️</span>
-                <span class="title-text">ISS Live Tracker</span>
-            </div>
-            <div class="window-spacer"></div>
+<div class="iss-tracker-content">
+    {#if loading && !issStats}
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Connecting to ISS...</p>
         </div>
+    {:else if error && !issStats}
+        <div class="error-state">
+            <span class="error-icon">⚠️</span>
+            <p>{error}</p>
+        </div>
+    {:else}
+        <div class="content-layout">
+            <!-- Map Container -->
+            <div class="map-container">
+                <div id="iss-map"></div>
+            </div>
 
-        <!-- Content -->
-        <div class="window-content">
-            {#if loading && !issStats}
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Connecting to ISS...</p>
-                </div>
-            {:else if error && !issStats}
-                <div class="error-state">
-                    <span class="error-icon">⚠️</span>
-                    <p>{error}</p>
-                </div>
-            {:else}
-                <div class="content-layout">
-                    <!-- Map Container -->
-                    <div class="map-container">
-                        <div id="iss-map"></div>
-                    </div>
-
-                    <!-- Stats Panel -->
-                    {#if issStats}
-                        <div class="stats-panel">
-                            <div class="stat-group">
-                                <h3 class="stat-title">📍 Position</h3>
-                                <div class="stat-items">
-                                    <div class="stat-item">
-                                        <span class="stat-label">Latitude</span>
-                                        <span class="stat-value"
-                                            >{formatCoordinate(
-                                                issStats.lat,
-                                                true,
-                                            )}</span
-                                        >
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-label">Longitude</span
-                                        >
-                                        <span class="stat-value"
-                                            >{formatCoordinate(
-                                                issStats.lon,
-                                                false,
-                                            )}</span
-                                        >
-                                    </div>
-                                </div>
+            <!-- Stats Panel -->
+            {#if issStats}
+                <div class="stats-panel">
+                    <div class="stat-group">
+                        <h3 class="stat-title">📍 Position</h3>
+                        <div class="stat-items">
+                            <div class="stat-item">
+                                <span class="stat-label">Latitude</span>
+                                <span class="stat-value"
+                                    >{formatCoordinate(
+                                        issStats.lat,
+                                        true,
+                                    )}</span
+                                >
                             </div>
-
-                            <div class="stat-group">
-                                <h3 class="stat-title">🚀 Movement</h3>
-                                <div class="stat-items">
-                                    <div class="stat-item">
-                                        <span class="stat-label">Altitude</span>
-                                        <span class="stat-value"
-                                            >{issStats.altitude.toLocaleString()}
-                                            km</span
-                                        >
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-label">Velocity</span>
-                                        <span class="stat-value"
-                                            >{issStats.velocity.toLocaleString()}
-                                            km/h</span
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="stat-group">
-                                <h3 class="stat-title">⏰ Last Updated</h3>
-                                <div class="stat-items">
-                                    <div class="stat-item">
-                                        <span class="stat-value time"
-                                            >{formatTime(
-                                                issStats.timestamp,
-                                            )}</span
-                                        >
-                                    </div>
-                                </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Longitude</span>
+                                <span class="stat-value"
+                                    >{formatCoordinate(
+                                        issStats.lon,
+                                        false,
+                                    )}</span
+                                >
                             </div>
                         </div>
-                    {/if}
+                    </div>
+
+                    <div class="stat-group">
+                        <h3 class="stat-title">🚀 Movement</h3>
+                        <div class="stat-items">
+                            <div class="stat-item">
+                                <span class="stat-label">Altitude</span>
+                                <span class="stat-value"
+                                    >{issStats.altitude.toLocaleString()}
+                                    km</span
+                                >
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Velocity</span>
+                                <span class="stat-value"
+                                    >{issStats.velocity.toLocaleString()}
+                                    km/h</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-group">
+                        <h3 class="stat-title">⏰ Last Updated</h3>
+                        <div class="stat-items">
+                            <div class="stat-item">
+                                <span class="stat-value time"
+                                    >{formatTime(issStats.timestamp)}</span
+                                >
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {/if}
         </div>
-    </div>
+    {/if}
 </div>
 
 <style>
-    .iss-tracker-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        backdrop-filter: blur(4px);
-    }
-
-    .iss-tracker-window {
-        width: 90%;
-        max-width: 900px;
-        height: 85vh;
-        max-height: 700px;
-        background: rgba(20, 20, 30, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(40px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    /* macOS Window Header */
-    .window-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .window-controls {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .control-btn {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        transition: filter 0.2s;
-    }
-
-    .control-btn:hover {
-        filter: brightness(1.2);
-    }
-
-    .control-btn.close {
-        background: #ff5f56;
-    }
-    .control-btn.minimize {
-        background: #ffbd2e;
-    }
-    .control-btn.maximize {
-        background: #27c93f;
-    }
-
-    .window-title {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .title-icon {
-        font-size: 1.25rem;
-    }
-
-    .title-text {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .window-spacer {
-        width: 60px;
-    }
-
-    /* Content */
-    .window-content {
+    .iss-tracker-content {
         flex: 1;
         overflow: hidden;
         display: flex;

@@ -201,7 +201,7 @@
                 class="cta-btn primary"
                 onclick={() => navigateTo("terminal")}
             >
-                View Terminal
+                View Desktop
             </button>
             <button
                 class="cta-btn secondary"

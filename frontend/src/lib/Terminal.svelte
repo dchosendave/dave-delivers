@@ -250,142 +250,52 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-  class="terminal-wrapper"
+  class="terminal-container"
   onclick={focusInput}
   onkeydown={handleWrapperKeydown}
   role="application"
   aria-label="Terminal interface"
   tabindex="0"
 >
-  <div class="terminal-header">
-    <div class="buttons">
-      <span class="button close"></span>
-      <span class="button minimize"></span>
-      <span class="button maximize"></span>
-    </div>
-    <div class="title">visitor@dchosen:~</div>
-  </div>
+  {#each terminalOutput as line, i (i)}
+    {#if line.type === "command"}
+      <div class="output-line command-line">
+        <span class="prompt">visitor@dchosen:~$</span>
+        <span class="command-text">{line.content}</span>
+      </div>
+    {:else if line.type === "response" || line.type === "system"}
+      <div class="output-line response-line">
+        {@html line.displayedContent || line.content}
+      </div>
+    {:else if line.type === "error"}
+      <div class="output-line error-line">
+        {@html line.displayedContent || line.content}
+      </div>
+    {/if}
+  {/each}
 
-  <div class="terminal-container">
-    {#each terminalOutput as line, i (i)}
-      {#if line.type === "command"}
-        <div class="output-line command-line">
-          <span class="prompt">visitor@dchosen:~$</span>
-          <span class="command-text">{line.content}</span>
-        </div>
-      {:else if line.type === "response" || line.type === "system"}
-        <div class="output-line response-line">
-          {@html line.displayedContent || line.content}
-        </div>
-      {:else if line.type === "error"}
-        <div class="output-line error-line">
-          {@html line.displayedContent || line.content}
-        </div>
-      {/if}
-    {/each}
-
-    <div class="input-line">
-      <span class="prompt">visitor@dchosen:~$</span>
-      <input
-        bind:this={inputElement}
-        bind:value={currentCommand}
-        onkeydown={handleKeydown}
-        type="text"
-        class="command-input"
-        disabled={isProcessing || isTyping}
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        aria-label="Terminal command input"
-      />
-      {#if isProcessing || isTyping}
-        <span class="loading">▓</span>
-      {/if}
-    </div>
+  <div class="input-line">
+    <span class="prompt">visitor@dchosen:~$</span>
+    <input
+      bind:this={inputElement}
+      bind:value={currentCommand}
+      onkeydown={handleKeydown}
+      type="text"
+      class="command-input"
+      disabled={isProcessing || isTyping}
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      aria-label="Terminal command input"
+    />
+    {#if isProcessing || isTyping}
+      <span class="loading">▓</span>
+    {/if}
   </div>
 </div>
 
 <style>
-  .terminal-wrapper {
-    width: 90%;
-    max-width: 1000px;
-    margin: 0 auto;
-    background-color: #0d1117;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow:
-      0 0 20px rgba(0, 255, 0, 0.2),
-      0 10px 40px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 100;
-    outline: none; /* Remove focus outline, we have our own visual feedback */
-  }
-
-  .terminal-wrapper:focus {
-    box-shadow:
-      0 0 30px rgba(0, 255, 0, 0.4),
-      0 10px 40px rgba(0, 0, 0, 0.5);
-  }
-
-  .terminal-header {
-    background: linear-gradient(180deg, #3c3c3c 0%, #2a2a2a 100%);
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid #1a1a1a;
-    /* macOS-style subtle inner shadow */
-    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  .buttons {
-    display: flex;
-    gap: 8px;
-    /* Left-aligned like macOS */
-    margin-right: auto;
-  }
-  .button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    /* Subtle inner highlight like macOS */
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-
-  .button.close {
-    background: linear-gradient(180deg, #ff5f57 0%, #e0443e 100%);
-  }
-  .button.minimize {
-    background: linear-gradient(180deg, #ffbd2e 0%, #dea123 100%);
-  }
-  .button.maximize {
-    background: linear-gradient(180deg, #28c940 0%, #1aab29 100%);
-  }
-
-  .button:hover::after {
-    font-size: 8px;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.5);
-  }
-  .button.close:hover::after {
-    content: "×";
-  }
-  .button.minimize:hover::after {
-    content: "−";
-  }
-  .button.maximize:hover::after {
-    content: "+";
-  }
-
-  .title {
-    color: #888;
-    font-size: 0.9em;
-    flex: 1;
-    text-align: center;
-  }
-
   .terminal-container {
     padding: 20px;
     height: 70vh;
