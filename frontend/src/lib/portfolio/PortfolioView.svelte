@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Hero from "./Hero.svelte";
     import Projects from "./Projects.svelte";
@@ -24,10 +24,10 @@
      * NAVIGATION - Updated for URL routing
      * Goes back to landing page (/)
      */
-    import { navigate } from "../router.js";
+    import { goto } from "$app/navigation";
 
     function goHome() {
-        navigate("/");
+        goto("/");
     }
 
     function toggleTheme() {
@@ -41,7 +41,7 @@
         }
     }
 
-    function handleMouseMove(e) {
+    function handleMouseMove(e: any) {
         const { clientX, clientY, currentTarget } = e;
         const { width, height } = currentTarget.getBoundingClientRect();
         mouseX = (clientX / width) * 100;

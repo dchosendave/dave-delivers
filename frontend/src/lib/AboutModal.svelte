@@ -1,15 +1,18 @@
-<script>
+<script lang="ts">
     let { onClose } = $props();
 
-    function handleKeydown(e) {
+    function handleKeydown(e: KeyboardEvent) {
         if (e.key === "Escape") {
             onClose();
         }
     }
 
-    function handleDivKeydown(e) {
+    function handleDivKeydown(e: KeyboardEvent) {
         if (e.key === "Enter" || e.key === " ") {
-            if (e.target.classList.contains("modal-overlay")) {
+            if (
+                e.target &&
+                (e.target as HTMLElement).classList?.contains("modal-overlay")
+            ) {
                 onClose();
             }
         }

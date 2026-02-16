@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import SkillCard from "./SkillCard.svelte";
 
@@ -8,7 +8,7 @@
      */
     import { fadeIn, scaleIn, staggerDelay } from "../animations.js";
 
-    let skills = [];
+    let skills: any[] = [];
 
     onMount(async () => {
         try {

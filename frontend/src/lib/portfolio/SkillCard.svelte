@@ -1,13 +1,13 @@
-<script>
-    export let skill;
+<script lang="ts">
+    export let skill: any;
 
     let rotX = 0;
     let rotY = 0;
     let isflipped = false;
 
-    function handleMouseMove(e) {
+    function handleMouseMove(e: MouseEvent) {
         // Get card dimensions and position
-        const card = e.currentTarget;
+        const card = e.currentTarget as HTMLElement;
         const rect = card.getBoundingClientRect();
 
         // Calculate mouse position relative to center of card
@@ -25,7 +25,7 @@
     }
 
     // Determine color based on proficiency for the back glow
-    function getGlowColor(proficiency) {
+    function getGlowColor(proficiency: number): string {
         if (proficiency >= 90) return "rgba(168,85,247,0.5)"; // Purple
         if (proficiency >= 75) return "rgba(59,130,246,0.5)"; // Blue
         return "rgba(100,116,139,0.5)"; // Slate

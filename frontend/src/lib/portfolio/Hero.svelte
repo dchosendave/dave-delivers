@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
 
     /**
@@ -8,7 +8,7 @@
     import { fadeIn, slideInLeft, staggerDelay } from "../animations.js";
 
     // State for contacts
-    let contacts = [];
+    let contacts: any[] = [];
 
     // Map contact types to icons (simple text fallback, or use lucide-svelte if you have it)
     const icons = {
@@ -28,8 +28,8 @@
         }
     });
 
-    function getLabel(type) {
-        return icons[type] || type;
+    function getLabel(type: string): string {
+        return icons[type as keyof typeof icons] || type;
     }
 </script>
 

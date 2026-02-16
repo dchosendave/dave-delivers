@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
 
     /**
@@ -9,7 +9,7 @@
      */
     import { fadeIn, scaleIn, staggerDelay } from "../animations.js";
 
-    let projects = [];
+    let projects: any[] = [];
 
     onMount(async () => {
         try {

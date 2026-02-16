@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import ParticleNetwork from "./ParticleNetwork.svelte";
 
@@ -158,15 +158,15 @@
      * NAVIGATION FUNCTION - Updated for URL routing
      * Now uses the router to change URLs properly
      */
-    import { navigate } from "./router.js";
+    import { goto } from "$app/navigation";
 
-    function navigateTo(view) {
-        // Map view names to URL paths
-        const paths = {
+    function navigateTo(view: string) {
+        const paths: Record<string, string> = {
             terminal: "/desktop",
             portfolio: "/get-to-know-me",
         };
-        navigate(paths[view] || "/");
+
+        goto(paths[view] || "/");
     }
 </script>
 

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Terminal from "./Terminal.svelte";
     import AboutModal from "./AboutModal.svelte";
@@ -63,19 +63,21 @@
         showBoot = false; // Show terminal
     }
 
-    function delay(ms) {
+    function delay(ms: any) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    function navigateTo(view) {
-        const event = new CustomEvent("navigate", {
-            detail: { view },
-            bubbles: true,
-        });
-        document.dispatchEvent(event);
+    import { goto } from "$app/navigation";
+
+    function navigateTo(view: string) {
+        const paths: Record<string, string> = {
+            landing: "/",
+            portfolio: "/get-to-know-me",
+        };
+        goto(paths[view] || "/");
     }
 
-    function openLink(url) {
+    function openLink(url: any) {
         window.open(url, "_blank");
     }
 </script>

@@ -1,13 +1,21 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
 
-  let commandHistory = $state([]);
-  let historyIndex = $state(-1);
-  let currentCommand = $state("");
-  let inputElement; // Regular let for bind:this (not $state)
-  let terminalOutput = $state([]);
-  let isProcessing = $state(false);
-  let isTyping = $state(false);
+  interface TerminalLine {
+    type: string;
+    content: string;
+    displayedContent?: string;
+    user?: string;
+    path?: string;
+  }
+
+  let commandHistory = $state<string[]>([]);
+  let historyIndex = $state<number>(-1);
+  let currentCommand = $state<string>("");
+  let inputElement: HTMLInputElement | undefined; // Regular let for bind:this (not $state)
+  let terminalOutput = $state<TerminalLine[]>([]);
+  let isProcessing = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
 
   const API_URL = "http://127.0.0.1:8000";
   const TYPING_SPEED = 8;
@@ -22,7 +30,7 @@
    * @param {string} fullText - The complete text to type out
    * @param {number} outputIndex - Index in terminalOutput to update
    */
-  async function typewriterEffect(fullText, outputIndex) {
+  async function typewriterEffect(fullText: string, outputIndex: number) {
     isTyping = true;
     let displayedText = "";
 
@@ -66,7 +74,11 @@
   /**
    * Adds output with optional typewriter effect
    */
-  async function addOutput(type, content, extras = {}) {
+  async function addOutput(
+    type: string,
+    content: string,
+    extras: Partial<TerminalLine> = {},
+  ) {
     const newLine = {
       type,
       content,
@@ -175,7 +187,7 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
   // EVENT HANDLERS
   // ============================================
 
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
       executeCommand();
     } else if (event.key === "ArrowUp") {
@@ -199,7 +211,7 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
     }
   }
 
-  function handleWrapperKeydown(event) {
+  function handleWrapperKeydown(event: KeyboardEvent) {
     // Allow Enter or Space to focus input (accessibility)
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();

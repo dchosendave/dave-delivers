@@ -1,16 +1,26 @@
-<script>
+<script lang="ts">
     import { onMount, onDestroy } from "svelte";
 
-    let canvas;
-    let ctx;
-    let particles = [];
-    let animationFrameId;
-    let width, height;
+    let canvas: HTMLCanvasElement | undefined;
+    let ctx: CanvasRenderingContext2D | null | undefined;
+    let particles: Particle[] = [];
+    let animationFrameId: number;
+    let width: number;
+    let height: number;
 
     // Theme state to adjust particle color
-    let { isDark } = $props();
+    let { isDark }: { isDark: boolean } = $props();
 
     class Particle {
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        size: number;
+        opacity: number;
+        fadeSpeed: number;
+        fadingIn: boolean;
+
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
@@ -41,6 +51,7 @@
         }
 
         draw() {
+            if (!ctx) return;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             // Use props for color (white for dark mode, dark grey for light mode)

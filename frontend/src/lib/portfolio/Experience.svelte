@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
 
     /**
@@ -9,7 +9,7 @@
      */
     import { fadeIn, slideInLeft, staggerDelay } from "../animations.js";
 
-    let experiences = [];
+    let experiences: any[] = [];
 
     onMount(async () => {
         try {
