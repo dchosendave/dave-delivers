@@ -27,8 +27,32 @@ def seed_data():
                 url=None
             ),
             Project(
+                name="Report Generator System",
+                description="Implemented user access management and role-based access control (RBAC), password recovery and enforcement, and dynamic role-driven navigation",
+                tags="HTML/CSS, jQuery, ASP.NET Web Forms, MS SQL Server, IIS Manager",
+                url="Company Internal System"
+            ),
+            Project(
+                name="PEMI Website",
+                description="Maintained and supported the website by delivering over 20+ production deployments",
+                tags="HTML/CSS, JavaScript, PHP, MySQL, Linux",
+                url="http://www.philequity.net"
+            ),
+            Project(
+                name="Letter-of-Intent Generator",
+                description="Developed a web-based tool that automates the generation of letters of intent for investment transactions and integrated it into an external legacy Oracle Database",
+                tags="Alpine.js, ASP.NET MVC, Oracle Database, IIS Manager",
+                url="Company Internal System"
+            ),
+            Project(
+                name="Apple-themed Portfolio",
+                description="A modern minimalist portfolio inspired by Apple's UI/UX design",
+                tags="Svelte, FastAPI, SQLite, Python",
+                url=None
+            ),
+            Project(
                 name="Terminal Portfolio",
-                description="A retro terminal-style portfolio website",
+                description="A retro terminal-style personal portfolio website",
                 tags="Svelte, FastAPI, SQLite, Python",
                 url=None
             ),
@@ -81,13 +105,13 @@ def seed_data():
             ),
             Contact(
                 type=ContactType.viber,
-                value="Viber",
-                url="+639150833518"
+                value="+639150833518",
+                url=""
             ),
             Contact(
                 type=ContactType.whatsapp,
-                value="WhatsApp",
-                url="+639150833518"
+                value="+639150833518",
+                url=""
             )
         ]
         for c in contacts:
@@ -98,14 +122,38 @@ def seed_data():
             Experience(
                 company="VANTAGE FINANCIAL CORP.",
                 duration="2023 - Present",
-                description="Backend Developer building scalable APIs and microservices",
-                tech_stack=".NET Core, SQL Server, Azure, REST APIs"
+                description="Backend Developer building scalable APIs and microservices, and maintaining legacy systems.",
+                tech_stack=".NET Core, .NET Framework, VB.NET, SQL Server / MySQL / Oracle SQL / PostgreSQL, AWS EC2/RDS/S3, Git"
             ),
             Experience(
                 company="EASTWEST BANKING CORP.",
                 duration="March 2023 - July 2023",
-                description="Software QA Intern who conducted manual testings, reportings, and defect tracking",
-                tech_stack=""
+                description="Software QA Intern who performed manual & automated testing on different Automatic Teller Machines.",
+                tech_stack="Manual/Automated Testing, Defect Tracking, Reporting, Banking Domain, Agile/Scrum"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2022 - August 2023",
+                description="Wrote a thesis about the comparison in performance of pathfinding algorithms in a grid-based environment. Integrated it into a 2D educational game.",
+                tech_stack="Unity, C#, Pathfinding Algorithms, Sprites, UI Design, Adobe Photoshop/Premiere Pro"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2021 - May 2022",
+                description="Developed a web-based voting system for the student council.",
+                tech_stack="HTML/CSS, C#, ASP.NET Web Forms, MySQL"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="Sept 2020 - May 2021",
+                description="Developed a mobile-based appointment system for a pet clinic.",
+                tech_stack="Android Studio, Java, XML UI, Firebase"
+            ),
+            Experience(
+                company="UNIVERSITY OF MAKATI",
+                duration="2019",
+                description="Debugged my first program. It was a mess.",
+                tech_stack="Java, jGrasp"
             )
         ]
         for e in experiences:

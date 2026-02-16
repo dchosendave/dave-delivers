@@ -20,6 +20,17 @@ dist
 dist-ssr
 *.local
 
+# SvelteKit
+.svelte-kit/
+build/
+.vercel/
+.netlify/
+.output/
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
 # ================================
 # BACKEND (Python/FastAPI)
 # ================================
@@ -42,7 +53,7 @@ ENV/
 build/
 develop-eggs/
 eggs/
-lib/
+/lib/
 lib64/
 parts/
 sdist/

@@ -56,3 +56,4 @@ class Experience(SQLModel, table=True):
     description: str
     tech_stack: str  # Comma-separated technologies
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
