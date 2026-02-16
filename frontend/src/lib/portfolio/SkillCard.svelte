@@ -210,7 +210,7 @@
     }
 
     .card-back {
-        background: rgba(30, 30, 35, 0.9);
+        /* background: rgba(30, 30, 35, 0.9); */
         backdrop-filter: blur(20px);
         padding: 1.5rem;
         justify-content: center;
