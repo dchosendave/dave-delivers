@@ -1,5 +1,7 @@
 {
 	"/": [],
 	"/desktop": [],
-	"/get-to-know-me": []
+	"/get-to-know-me": [],
+	"/playground/pacman": [],
+	"/playground/snake": []
 }

@@ -27,16 +27,19 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/desktop" | "/get-to-know-me";
+		RouteId(): "/" | "/desktop" | "/get-to-know-me" | "/playground" | "/playground/pacman" | "/playground/snake";
 		RouteParams(): {
 			
 		};
 		LayoutParams(): {
 			"/": Record<string, never>;
 			"/desktop": Record<string, never>;
-			"/get-to-know-me": Record<string, never>
+			"/get-to-know-me": Record<string, never>;
+			"/playground": Record<string, never>;
+			"/playground/pacman": Record<string, never>;
+			"/playground/snake": Record<string, never>
 		};
-		Pathname(): "/" | "/desktop" | "/get-to-know-me";
+		Pathname(): "/" | "/desktop" | "/get-to-know-me" | "/playground/pacman" | "/playground/snake";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/LDD - Resume January 2026 V2.pdf" | "/vite.svg" | string & {};
 	}

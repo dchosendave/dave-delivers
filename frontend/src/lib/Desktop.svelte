@@ -188,6 +188,25 @@
             >
                 <span class="dock-icon">🐙</span>
             </button>
+
+            <div class="dock-divider"></div>
+
+            <!-- Games Section -->
+            <button
+                class="dock-item"
+                onclick={() => goto("/playground/snake")}
+                title="Snake AI - BFS Pathfinding"
+            >
+                <span class="dock-icon">🐍</span>
+            </button>
+
+            <button
+                class="dock-item"
+                onclick={() => goto("/playground/pacman")}
+                title="Pac-Man AI - A* Pathfinding"
+            >
+                <span class="dock-icon">👻</span>
+            </button>
         </div>
     </div>
 </div>
