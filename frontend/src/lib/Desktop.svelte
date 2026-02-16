@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import Terminal from "./Terminal.svelte";
     import AboutModal from "./AboutModal.svelte";
+    import ISSTracker from "./ISSTracker.svelte";
 
     // Theme state
     let isDark = $state(true);
@@ -9,6 +10,7 @@
     let showBoot = $state(true);
     let bootPhase = $state(0);
     let showAboutModal = $state(false);
+    let showISSTracker = $state(false);
 
     onMount(() => {
         // Load saved theme
@@ -207,9 +209,24 @@
             >
                 <span class="dock-icon">👻</span>
             </button>
+
+            <div class="dock-divider"></div>
+
+            <!-- ISS Tracker -->
+            <button
+                class="dock-item"
+                onclick={() => (showISSTracker = true)}
+                title="ISS Live Tracker"
+            >
+                <span class="dock-icon">🛰️</span>
+            </button>
         </div>
     </div>
 </div>
+
+{#if showISSTracker}
+    <ISSTracker onClose={() => (showISSTracker = false)} />
+{/if}
 
 <style>
     .desktop-wrapper {
