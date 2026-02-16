@@ -21,7 +21,7 @@
 
     onMount(async () => {
         try {
-            const res = await fetch("http://localhost:8000/contacts");
+            const res = await fetch("/api/contacts");
             contacts = await res.json();
         } catch (error) {
             console.error("Failed to load contacts", error);
