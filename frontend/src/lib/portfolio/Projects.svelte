@@ -1,22 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
-    /**
-     * IMPORT ANIMATIONS
-     * - fadeIn: For section header
-     * - scaleIn: For project cards (looks great on cards!)
-     * - staggerDelay: To make cards appear one by one
-     */
     import { fadeIn, scaleIn, staggerDelay } from "../animations.js";
+    import { getProjects } from "$lib/api/portfolio";
+    import { parseTags } from "$lib/utils/formatters";
+    import type { Project } from "$lib/types";
 
-    let projects: any[] = [];
+    let projects: Project[] = [];
 
     onMount(async () => {
         try {
-            const res = await fetch("/api/projects");
-            projects = await res.json();
+            projects = await getProjects();
         } catch (err) {
-            console.error(err);
+            console.error("Failed to load projects:", err);
         }
     });
 </script>
@@ -66,7 +61,7 @@
                 <div class="project-footer">
                     <!-- Tech Stack Pills -->
                     <div class="tech-tags">
-                        {#each project.tags.split(",") as tag}
+                        {#each parseTags(project.tags) as tag}
                             <span class="tech-tag">
                                 {tag.trim()}
                             </span>
