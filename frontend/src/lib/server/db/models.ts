@@ -20,7 +20,7 @@ import { z } from 'zod';
 // Re-export shared types so server code can import from one place
 // ---------------------------------------------------------------------------
 
-export type { Project, Skill, Contact, Experience, CommandRequest, CommandResponse } from '$lib/types';
+export type { Project, Skill, Contact, Experience, Message, CommandRequest, CommandResponse } from '$lib/types';
 export { ContactType } from '$lib/types';
 
 // ---------------------------------------------------------------------------
@@ -44,6 +44,22 @@ export const CommandRequestSchema = z.object({
  * Ensures only valid enum values are accepted from external input.
  */
 export const ContactTypeSchema = z.enum(['gmail', 'github', 'linkedin', 'viber', 'whatsapp']);
+
+/**
+ * Runtime validation for incoming contact form submissions.
+ *
+ * C# equivalent:
+ *   public class MessageRequestValidator : AbstractValidator<MessageRequest> {
+ *     RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+ *     RuleFor(x => x.Email).EmailAddress();
+ *     RuleFor(x => x.Content).NotEmpty().MaximumLength(2000);
+ *   }
+ */
+export const MessageRequestSchema = z.object({
+    name: z.string().min(2, 'Name is too short').max(100, 'Name is too long'),
+    email: z.string().email('Invalid email address'),
+    content: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message is too long')
+});
 
 // ---------------------------------------------------------------------------
 // Type Guards (runtime narrowing helpers)

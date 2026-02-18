@@ -80,6 +80,17 @@ export interface Experience {
     created_at: string;
 }
 
+/**
+ * Message entity — a contact form submission from a visitor.
+ */
+export interface Message {
+    id?: number;
+    name: string;
+    email: string;
+    content: string;
+    created_at: string;
+}
+
 // ---------------------------------------------------------------------------
 // Terminal API request / response shapes
 // ---------------------------------------------------------------------------

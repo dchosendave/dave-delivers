@@ -1,15 +1,17 @@
 /**
  * SvelteKit Server Hooks
  * 
- * Initializes the database connection and tables on server startup
+ * Initializes the database connection and tables on server startup.
+ * Auto-seeds when tables are empty (first run).
  * 
  * The ".NET Bridge":
- * - Similar to C# Startup.cs or Program.cs configuration
- * - Runs during application bootstrap (like ConfigureServices/Configure)
- * - Think of this as the ASP.NET Core middleware pipeline setup
+ * - Similar to C# Program.cs startup pipeline
+ * - initializeOnce() ≈ ConfigureServices + DbInitializer.Seed()
+ * - handle() ≈ app.Use() middleware pipeline
  */
 
 import { initializeDatabase, checkDatabaseConnection } from '$lib/server/db/connection';
+import { isDatabaseEmpty, seedDatabase } from '$lib/server/db/seed';
 import type { Handle } from '@sveltejs/kit';
 
 // Initialize database on server startup
@@ -26,6 +28,13 @@ async function initializeOnce(): Promise<void> {
         }
 
         await initializeDatabase();
+
+        // Auto-seed if tables are empty (first run)
+        if (await isDatabaseEmpty()) {
+            console.log('📭 Database is empty — auto-seeding...');
+            await seedDatabase();
+        }
+
         databaseInitialized = true;
         console.log('✅ Database initialized successfully');
     }

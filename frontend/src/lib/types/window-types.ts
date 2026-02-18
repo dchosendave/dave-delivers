@@ -3,7 +3,7 @@
  * Type definitions for macOS-style window management
  */
 
-export type WindowType = 'terminal' | 'iss-tracker';
+export type WindowType = 'terminal' | 'iss-tracker' | 'nasa-apod';
 
 export interface WindowState {
     id: WindowType;

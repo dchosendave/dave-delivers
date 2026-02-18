@@ -11,7 +11,7 @@
  */
 
 import { db } from '../db/connection';
-import type { Project, Skill, Contact, Experience } from '../db/models';
+import type { Project, Skill, Contact, Experience, Message } from '../db/models';
 import type { ResultSet } from '@libsql/client';
 
 /**
@@ -118,6 +118,47 @@ export class DeveloperInformationRepository {
         } catch (error) {
             console.error('❌ Failed to fetch experience:', error);
             throw new Error('Database query failed: experience');
+        }
+    }
+
+    /**
+     * Save a contact form message
+     * 
+     * SQL: INSERT INTO message (name, email, content) VALUES (?, ?, ?)
+     */
+    async saveMessage(name: string, email: string, content: string): Promise<void> {
+        try {
+            await db.execute({
+                sql: 'INSERT INTO message (name, email, content, created_at) VALUES (?, ?, ?, datetime(\'now\'))',
+                args: [name, email, content]
+            });
+        } catch (error) {
+            console.error('❌ Failed to save message:', error);
+            throw new Error('Database query failed: save message');
+        }
+    }
+
+    /**
+     * Get all messages ordered by newest first
+     * 
+     * SQL: SELECT * FROM message ORDER BY created_at DESC
+     */
+    async getMessages(): Promise<Message[]> {
+        try {
+            const result: ResultSet = await db.execute(
+                'SELECT * FROM message ORDER BY created_at DESC'
+            );
+
+            return result.rows.map((row) => ({
+                id: row.id as number,
+                name: row.name as string,
+                email: row.email as string,
+                content: row.content as string,
+                created_at: row.created_at as string
+            }));
+        } catch (error) {
+            console.error('❌ Failed to fetch messages:', error);
+            throw new Error('Database query failed: messages');
         }
     }
 }

@@ -5,6 +5,8 @@
     import AboutModal from "./AboutModal.svelte";
     import ISSTracker from "./ISSTracker.svelte";
     import Window from "./Window.svelte";
+    import ClockWidget from "./widgets/ClockWidget.svelte";
+    import WeatherWidget from "./widgets/WeatherWidget.svelte";
     import type {
         WindowType,
         WindowState,
@@ -66,14 +68,14 @@
 
     async function runBootSequence() {
         // Phase 0: Black screen (already set)
-        await delay(500);
-        bootPhase = 1; // Show ASCII logo
+        await delay(400);
+        bootPhase = 1; // Show logo
+        await delay(800);
+        bootPhase = 2; // Show progress bar + animate fill
         await delay(1500);
-        bootPhase = 2; // Show loading
-        await delay(1000);
         bootPhase = 3; // Fade out
-        await delay(500);
-        showBoot = false; // Show terminal
+        await delay(600);
+        showBoot = false; // Reveal desktop
     }
 
     function delay(ms: any) {
@@ -94,6 +96,12 @@
                     id: "iss-tracker",
                     title: "ISS Live Tracker",
                     icon: "🛰️",
+                };
+            case "nasa-apod":
+                return {
+                    id: "nasa-apod",
+                    title: "NASA APOD",
+                    icon: "🔭",
                 };
         }
     }
@@ -160,11 +168,81 @@
     function openLink(url: any) {
         window.open(url, "_blank");
     }
+
+    // Desktop icon definitions
+    interface DesktopIcon {
+        id: string;
+        label: string;
+        icon: string;
+        action: () => void;
+    }
+
+    const desktopIcons: DesktopIcon[] = [
+        {
+            id: "resume",
+            label: "Resume.pdf",
+            icon: "📄",
+            action: () =>
+                window.open("/LDD - Resume January 2026 V2.pdf", "_blank"),
+        },
+        {
+            id: "projects",
+            label: "Projects",
+            icon: "📁",
+            action: () => navigateTo("portfolio"),
+        },
+        {
+            id: "terminal",
+            label: "Terminal",
+            icon: "💻",
+            action: () => openWindow("terminal"),
+        },
+        {
+            id: "snake",
+            label: "Snake AI",
+            icon: "🐍",
+            action: () => goto("/playground/snake"),
+        },
+        {
+            id: "pacman",
+            label: "Pac-Man AI",
+            icon: "👻",
+            action: () => goto("/playground/pacman"),
+        },
+        {
+            id: "iss",
+            label: "ISS Tracker",
+            icon: "🛰️",
+            action: () => openWindow("iss-tracker"),
+        },
+        {
+            id: "nasa",
+            label: "NASA APOD",
+            icon: "🔭",
+            action: () => openWindow("nasa-apod"),
+        },
+    ];
+
+    let selectedIcon = $state<string | null>(null);
+
+    function handleIconClick(icon: DesktopIcon) {
+        selectedIcon = icon.id;
+        icon.action();
+    }
+
+    function handleDesktopClick(e: MouseEvent) {
+        // Deselect icon if clicking on empty desktop area
+        const target = e.target as HTMLElement;
+        if (!target.closest(".desktop-icon")) {
+            selectedIcon = null;
+        }
+    }
 </script>
 
 <div class="desktop-wrapper">
     <!-- Animated Gradient Background -->
     <div class="wallpaper"></div>
+    <div class="wallpaper-grain"></div>
 
     <!-- Menu Bar -->
     <div class="menu-bar">
@@ -173,7 +251,7 @@
                 class="menu-brand-btn"
                 onclick={() => (showAboutModal = true)}
             >
-                <span class="menu-brand">Dave Dichoson</span>
+                <span class="menu-brand">Lowie Dave Dichoson</span>
             </button>
         </div>
         <div class="menu-right">
@@ -193,27 +271,47 @@
         <AboutModal onClose={() => (showAboutModal = false)} />
     {/if}
 
-    <!-- Boot Sequence -->
+    <!-- Boot Sequence (macOS-style) -->
     {#if showBoot}
         <div class="boot-screen" class:fade-out={bootPhase === 3}>
             {#if bootPhase >= 1}
-                <pre class="boot-logo">
- ____   ____ _   _  ___  ____  _____ _   _ 
-|  _ \ / ___| | | |/ _ \/ ___|| ____| \ | |
-| | | | |   | |_| | | | \___ \|  _| |  \| |
-| |_| | |___|  _  | |_| |___) | |___| |\  |
-|____/ \____|_| |_|\___/|____/|_____|_| \_|
-        </pre>
+                <div class="boot-logo">
+                    <span class="boot-monogram">LDD</span>
+                </div>
             {/if}
             {#if bootPhase >= 2}
-                <p class="boot-loading">
-                    Initializing Desktop<span class="dots">...</span>
-                </p>
+                <div class="boot-progress-track">
+                    <div class="boot-progress-fill"></div>
+                </div>
             {/if}
         </div>
     {:else}
-        <!-- Desktop Area (starts empty) -->
-        <div class="desktop-area">
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div class="desktop-area" onclick={handleDesktopClick}>
+            <!-- macOS Desktop Icons (top-right grid) -->
+            <div class="desktop-icons">
+                {#each desktopIcons as icon (icon.id)}
+                    <button
+                        class="desktop-icon"
+                        class:selected={selectedIcon === icon.id}
+                        ondblclick={() => handleIconClick(icon)}
+                        onclick={() => (selectedIcon = icon.id)}
+                        title={icon.label}
+                    >
+                        <span class="desktop-icon-img">{icon.icon}</span>
+                        <span class="desktop-icon-label">{icon.label}</span>
+                    </button>
+                {/each}
+            </div>
+
+            <!-- macOS Desktop Widgets (bottom-left) -->
+            <div class="desktop-widgets">
+                <ClockWidget />
+                <WeatherWidget />
+            </div>
+
+            <!-- Windows -->
             {#each openWindows as window (window.id)}
                 <Window
                     {window}
@@ -319,6 +417,18 @@
                     <div class="dock-indicator"></div>
                 {/if}
             </button>
+
+            <button
+                class="dock-item"
+                class:active={openWindows.some((w) => w.id === "nasa-apod")}
+                onclick={() => openWindow("nasa-apod")}
+                title="NASA APOD"
+            >
+                <span class="dock-icon">🔭</span>
+                {#if openWindows.some((w) => w.id === "nasa-apod")}
+                    <div class="dock-indicator"></div>
+                {/if}
+            </button>
         </div>
     </div>
 </div>
@@ -345,18 +455,23 @@
         height: 200%;
         background: radial-gradient(
                 circle at 20% 80%,
-                rgba(120, 119, 198, 0.3) 0%,
-                transparent 50%
+                rgba(100, 80, 220, 0.55) 0%,
+                transparent 45%
             ),
             radial-gradient(
                 circle at 80% 20%,
-                rgba(255, 119, 198, 0.2) 0%,
-                transparent 50%
+                rgba(255, 100, 180, 0.45) 0%,
+                transparent 45%
             ),
             radial-gradient(
-                circle at 40% 40%,
-                rgba(90, 200, 250, 0.2) 0%,
+                circle at 50% 50%,
+                rgba(60, 180, 255, 0.35) 0%,
                 transparent 40%
+            ),
+            radial-gradient(
+                circle at 70% 70%,
+                rgba(255, 170, 60, 0.25) 0%,
+                transparent 35%
             );
         animation: gradientMove 20s ease-in-out infinite;
         z-index: 0;
@@ -365,19 +480,40 @@
     :global(:root.light) .wallpaper {
         background: radial-gradient(
                 circle at 20% 80%,
-                rgba(120, 119, 198, 0.15) 0%,
-                transparent 50%
+                rgba(100, 80, 220, 0.3) 0%,
+                transparent 45%
             ),
             radial-gradient(
                 circle at 80% 20%,
-                rgba(255, 119, 198, 0.1) 0%,
-                transparent 50%
+                rgba(255, 100, 180, 0.25) 0%,
+                transparent 45%
             ),
             radial-gradient(
-                circle at 40% 40%,
-                rgba(90, 200, 250, 0.1) 0%,
+                circle at 50% 50%,
+                rgba(60, 180, 255, 0.2) 0%,
                 transparent 40%
+            ),
+            radial-gradient(
+                circle at 70% 70%,
+                rgba(255, 170, 60, 0.15) 0%,
+                transparent 35%
             );
+    }
+
+    /* Subtle noise/grain texture — mimics macOS wallpaper grain */
+    .wallpaper-grain {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0.035;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 256px 256px;
+    }
+
+    :global(:root.light) .wallpaper-grain {
+        opacity: 0.04;
     }
 
     @keyframes gradientMove {
@@ -450,7 +586,7 @@
         color: var(--color-text-secondary);
     }
 
-    /* ===== BOOT SEQUENCE ===== */
+    /* ===== BOOT SEQUENCE (macOS-style) ===== */
     .boot-screen {
         position: absolute;
         inset: 0;
@@ -459,8 +595,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 2.5rem;
         background: #000;
-        transition: opacity 0.5s ease;
+        transition: opacity 0.6s ease;
     }
 
     .boot-screen.fade-out {
@@ -468,25 +605,65 @@
     }
 
     .boot-logo {
-        font-family: var(--font-mono);
-        font-size: clamp(0.4rem, 1.5vw, 0.8rem);
-        color: #00ff00;
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        animation: fadeIn 0.5s ease;
+        animation: bootFadeIn 0.6s ease;
+    }
+
+    .boot-monogram {
+        font-size: 4.5rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+            "Segoe UI", sans-serif;
+        letter-spacing: -0.04em;
+        display: block;
         text-align: center;
-        white-space: pre;
+        opacity: 0.95;
     }
 
-    .boot-loading {
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        color: #00ff00;
-        margin-top: 2rem;
-        animation: fadeIn 0.5s ease;
+    .boot-progress-track {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        overflow: hidden;
+        animation: bootFadeIn 0.3s ease;
     }
 
-    .dots {
-        animation: blink 1s infinite;
+    .boot-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #fff;
+        border-radius: 4px;
+        animation: bootFill 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes bootFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes bootFill {
+        0% {
+            width: 0%;
+        }
+        20% {
+            width: 15%;
+        }
+        50% {
+            width: 55%;
+        }
+        80% {
+            width: 85%;
+        }
+        100% {
+            width: 100%;
+        }
     }
 
     @keyframes fadeIn {
@@ -500,23 +677,140 @@
         }
     }
 
-    @keyframes blink {
-        0%,
-        50% {
-            opacity: 1;
-        }
-        51%,
-        100% {
-            opacity: 0;
-        }
-    }
-
     /* ===== DESKTOP AREA ===== */
     .desktop-area {
         position: relative;
         z-index: 10;
         flex: 1;
         animation: fadeIn 0.5s ease;
+    }
+
+    /* ===== DESKTOP WIDGETS ===== */
+    .desktop-widgets {
+        position: absolute;
+        bottom: 5.5rem;
+        left: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        z-index: 5;
+        animation: fadeIn 0.8s ease 0.3s both;
+    }
+
+    @media (max-width: 768px) {
+        .desktop-widgets {
+            bottom: 5rem;
+            left: 0.75rem;
+            gap: 0.5rem;
+            flex-direction: column;
+        }
+    }
+
+    /* ===== DESKTOP ICONS (macOS-style) ===== */
+    .desktop-icons {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: auto;
+        gap: 0.25rem 0.5rem;
+        justify-items: center;
+        z-index: 5;
+    }
+
+    .desktop-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        width: 80px;
+        padding: 0.5rem 0.25rem;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        cursor: default;
+        transition: background 0.15s ease;
+        user-select: none;
+    }
+
+    .desktop-icon:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .desktop-icon.selected {
+        background: rgba(59, 130, 246, 0.25);
+        outline: 1.5px solid rgba(59, 130, 246, 0.5);
+        border-radius: 6px;
+    }
+
+    :global(:root.light) .desktop-icon:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    :global(:root.light) .desktop-icon.selected {
+        background: rgba(59, 130, 246, 0.15);
+        outline-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .desktop-icon-img {
+        font-size: 2.75rem;
+        line-height: 1;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .desktop-icon-label {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        color: #fff;
+        text-align: center;
+        line-height: 1.2;
+        text-shadow:
+            0 1px 3px rgba(0, 0, 0, 0.8),
+            0 0 6px rgba(0, 0, 0, 0.4);
+        word-break: break-word;
+        max-width: 72px;
+    }
+
+    :global(:root.light) .desktop-icon-label {
+        color: #1a1a1a;
+        text-shadow:
+            0 1px 3px rgba(255, 255, 255, 0.8),
+            0 0 6px rgba(255, 255, 255, 0.4);
+    }
+
+    .desktop-icon.selected .desktop-icon-label {
+        background: rgba(59, 130, 246, 0.7);
+        color: #fff;
+        text-shadow: none;
+        border-radius: 3px;
+        padding: 0 3px;
+    }
+
+    :global(:root.light) .desktop-icon.selected .desktop-icon-label {
+        background: rgba(59, 130, 246, 0.6);
+        color: #fff;
+        text-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+        .desktop-icons {
+            grid-template-columns: repeat(2, 1fr);
+            right: 0.75rem;
+            top: 0.5rem;
+        }
+
+        .desktop-icon {
+            width: 68px;
+        }
+
+        .desktop-icon-img {
+            font-size: 2.25rem;
+        }
+
+        .desktop-icon-label {
+            font-size: 0.625rem;
+        }
     }
 
     /* ===== DOCK ===== */

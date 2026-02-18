@@ -57,13 +57,13 @@
 
                 <div class="specs-grid">
                     <div class="spec-label">Processor</div>
-                    <div class="spec-value">Python + Svelte 5</div>
+                    <div class="spec-value">SvelteKit</div>
 
                     <div class="spec-label">Memory</div>
                     <div class="spec-value">Infinite Curiosity</div>
 
                     <div class="spec-label">Graphics</div>
-                    <div class="spec-value">CSS / Tailwind / Canvas</div>
+                    <div class="spec-value">TailwindCSS</div>
 
                     <div class="spec-label">Startup</div>
                     <div class="spec-value">Portfolio v2.0</div>
@@ -78,7 +78,7 @@
                                 "_blank",
                             )}
                     >
-                        Github Ops...
+                        GitHub...
                     </button>
                     <button
                         class="action-btn"

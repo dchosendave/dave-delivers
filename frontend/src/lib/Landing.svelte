@@ -50,7 +50,7 @@
             "Backend Developer",
             "System Architect",
             "Database Engineer",
-            "AI Development",
+            "AI-assisted Development",
         ];
 
         // Staggered reveal animation
