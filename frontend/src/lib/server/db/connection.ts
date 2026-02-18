@@ -26,8 +26,8 @@ import { TURSO_DB_URL, TURSO_DB_AUTH_TOKEN } from '$env/static/private';
  * - Or use: url: 'file:../database/portfolio.db' (local SQLite file)
  */
 export const db = createClient({
-    url: TURSO_DB_URL || 'file:../database/portfolio.db', // Fallback to local file
-    authToken: TURSO_DB_AUTH_TOKEN || undefined
+	url: TURSO_DB_URL || 'file:../database/portfolio.db', // Fallback to local file
+	authToken: TURSO_DB_AUTH_TOKEN || undefined
 });
 
 /**
@@ -39,9 +39,9 @@ export const db = createClient({
  * Creates all tables if they don't exist (DDL statements)
  */
 export async function initializeDatabase(): Promise<void> {
-    try {
-        // Create Project table
-        await db.execute(`
+	try {
+		// Create Project table
+		await db.execute(`
 			CREATE TABLE IF NOT EXISTS project (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				name TEXT NOT NULL,
@@ -52,8 +52,8 @@ export async function initializeDatabase(): Promise<void> {
 			)
 		`);
 
-        // Create Skill table
-        await db.execute(`
+		// Create Skill table
+		await db.execute(`
 			CREATE TABLE IF NOT EXISTS skill (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				name TEXT NOT NULL,
@@ -62,8 +62,8 @@ export async function initializeDatabase(): Promise<void> {
 			)
 		`);
 
-        // Create Contact table
-        await db.execute(`
+		// Create Contact table
+		await db.execute(`
 			CREATE TABLE IF NOT EXISTS contact (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				type TEXT NOT NULL CHECK(type IN ('gmail', 'github', 'linkedin', 'viber', 'whatsapp')),
@@ -73,8 +73,8 @@ export async function initializeDatabase(): Promise<void> {
 			)
 		`);
 
-        // Create Experience table
-        await db.execute(`
+		// Create Experience table
+		await db.execute(`
 			CREATE TABLE IF NOT EXISTS experience (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				company TEXT NOT NULL,
@@ -85,11 +85,11 @@ export async function initializeDatabase(): Promise<void> {
 			)
 		`);
 
-        console.log('✅ Database tables initialized successfully');
-    } catch (error) {
-        console.error('❌ Failed to initialize database:', error);
-        throw error;
-    }
+		console.log('✅ Database tables initialized successfully');
+	} catch (error) {
+		console.error('❌ Failed to initialize database:', error);
+		throw error;
+	}
 }
 
 /**
@@ -97,11 +97,11 @@ export async function initializeDatabase(): Promise<void> {
  * Useful for debugging and startup verification
  */
 export async function checkDatabaseConnection(): Promise<boolean> {
-    try {
-        await db.execute('SELECT 1');
-        return true;
-    } catch (error) {
-        console.error('❌ Database connection failed:', error);
-        return false;
-    }
+	try {
+		await db.execute('SELECT 1');
+		return true;
+	} catch (error) {
+		console.error('❌ Database connection failed:', error);
+		return false;
+	}
 }
