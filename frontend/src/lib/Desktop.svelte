@@ -68,14 +68,14 @@
 
     async function runBootSequence() {
         // Phase 0: Black screen (already set)
-        await delay(500);
-        bootPhase = 1; // Show ASCII logo
+        await delay(400);
+        bootPhase = 1; // Show logo
+        await delay(800);
+        bootPhase = 2; // Show progress bar + animate fill
         await delay(1500);
-        bootPhase = 2; // Show loading
-        await delay(1000);
         bootPhase = 3; // Fade out
-        await delay(500);
-        showBoot = false; // Show terminal
+        await delay(600);
+        showBoot = false; // Reveal desktop
     }
 
     function delay(ms: any) {
@@ -239,7 +239,7 @@
                 class="menu-brand-btn"
                 onclick={() => (showAboutModal = true)}
             >
-                <span class="menu-brand">Dave Dichoson</span>
+                <span class="menu-brand">Lowie Dave Dichoson</span>
             </button>
         </div>
         <div class="menu-right">
@@ -259,22 +259,18 @@
         <AboutModal onClose={() => (showAboutModal = false)} />
     {/if}
 
-    <!-- Boot Sequence -->
+    <!-- Boot Sequence (macOS-style) -->
     {#if showBoot}
         <div class="boot-screen" class:fade-out={bootPhase === 3}>
             {#if bootPhase >= 1}
-                <pre class="boot-logo">
- ____   ____ _   _  ___  ____  _____ _   _ 
-|  _ \ / ___| | | |/ _ \/ ___|| ____| \ | |
-| | | | |   | |_| | | | \___ \|  _| |  \| |
-| |_| | |___|  _  | |_| |___) | |___| |\  |
-|____/ \____|_| |_|\___/|____/|_____|_| \_|
-        </pre>
+                <div class="boot-logo">
+                    <span class="boot-monogram">LDD</span>
+                </div>
             {/if}
             {#if bootPhase >= 2}
-                <p class="boot-loading">
-                    Initializing Desktop<span class="dots">...</span>
-                </p>
+                <div class="boot-progress-track">
+                    <div class="boot-progress-fill"></div>
+                </div>
             {/if}
         </div>
     {:else}
@@ -566,7 +562,7 @@
         color: var(--color-text-secondary);
     }
 
-    /* ===== BOOT SEQUENCE ===== */
+    /* ===== BOOT SEQUENCE (macOS-style) ===== */
     .boot-screen {
         position: absolute;
         inset: 0;
@@ -575,8 +571,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 2.5rem;
         background: #000;
-        transition: opacity 0.5s ease;
+        transition: opacity 0.6s ease;
     }
 
     .boot-screen.fade-out {
@@ -584,25 +581,65 @@
     }
 
     .boot-logo {
-        font-family: var(--font-mono);
-        font-size: clamp(0.4rem, 1.5vw, 0.8rem);
-        color: #00ff00;
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        animation: fadeIn 0.5s ease;
+        animation: bootFadeIn 0.6s ease;
+    }
+
+    .boot-monogram {
+        font-size: 4.5rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+            "Segoe UI", sans-serif;
+        letter-spacing: -0.04em;
+        display: block;
         text-align: center;
-        white-space: pre;
+        opacity: 0.95;
     }
 
-    .boot-loading {
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        color: #00ff00;
-        margin-top: 2rem;
-        animation: fadeIn 0.5s ease;
+    .boot-progress-track {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        overflow: hidden;
+        animation: bootFadeIn 0.3s ease;
     }
 
-    .dots {
-        animation: blink 1s infinite;
+    .boot-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #fff;
+        border-radius: 4px;
+        animation: bootFill 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes bootFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes bootFill {
+        0% {
+            width: 0%;
+        }
+        20% {
+            width: 15%;
+        }
+        50% {
+            width: 55%;
+        }
+        80% {
+            width: 85%;
+        }
+        100% {
+            width: 100%;
+        }
     }
 
     @keyframes fadeIn {
@@ -613,17 +650,6 @@
         to {
             opacity: 1;
             transform: translateY(0);
-        }
-    }
-
-    @keyframes blink {
-        0%,
-        50% {
-            opacity: 1;
-        }
-        51%,
-        100% {
-            opacity: 0;
         }
     }
 

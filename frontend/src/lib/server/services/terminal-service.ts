@@ -102,6 +102,10 @@ export class TerminalService {
             return this.handleShutdownCommand();
         }
 
+        if (cmd === 'messages') {
+            return await this.handleMessagesCommand();
+        }
+
         // Unknown command
         return this.handleUnknownCommand(cmd);
     }
@@ -118,6 +122,7 @@ export class TerminalService {
         output += '- contacts: slide into my DMs\n';
         output += '- stack: how i built this thing\n';
         output += '- resume: the formal stuff adults like (PDF)\n';
+        output += '- messages: check visitor messages\n';
         output += '- clear: wipe the slate clean\n';
 
         return { output, user: '', path: '' };
@@ -320,6 +325,28 @@ export class TerminalService {
             user: '',
             path: ''
         };
+    }
+
+    private async handleMessagesCommand(): Promise<CommandResponse> {
+        const messages = await this.repository.getMessages();
+
+        if (messages.length === 0) {
+            return { output: '📭 No messages yet. Your inbox is squeaky clean.', user: '', path: '' };
+        }
+
+        let output = '<span style=\'color:#00ff00;\'>📬 INBOX</span>\n';
+        output += '━━━━━━━━━━━━━━━━━━━━\n\n';
+
+        for (const msg of messages) {
+            output += `<span style='color:#4facfe;font-weight:bold;'>▸ ${msg.name}</span>`;
+            output += ` <span style='color:#888;'>&lt;${msg.email}&gt;</span>\n`;
+            output += `  ${msg.content}\n`;
+            output += `  <span style='color:#666; font-size:0.85em;'>${msg.created_at}</span>\n\n`;
+        }
+
+        output += `<span style='color:#888;'>${messages.length} message${messages.length === 1 ? '' : 's'} total</span>`;
+
+        return { output, user: '', path: '' };
     }
 
     private handleUnknownCommand(cmd: string): CommandResponse {

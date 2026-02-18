@@ -9,7 +9,7 @@
  *   or a "using" alias that simplifies long import paths.
  */
 
-export type { Project, Skill, Contact, Experience, CommandRequest, CommandResponse } from './database';
+export type { Project, Skill, Contact, Experience, Message, CommandRequest, CommandResponse } from './database';
 export { ContactType } from './database';
 export type {
     GitHubUser,

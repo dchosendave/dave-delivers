@@ -85,6 +85,17 @@ export async function initializeDatabase(): Promise<void> {
 			)
 		`);
 
+		// Create Message table (contact form submissions)
+		await db.execute(`
+			CREATE TABLE IF NOT EXISTS message (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				name TEXT NOT NULL,
+				email TEXT NOT NULL,
+				content TEXT NOT NULL,
+				created_at TEXT NOT NULL DEFAULT (datetime('now'))
+			)
+		`);
+
 		console.log('✅ Database tables initialized successfully');
 	} catch (error) {
 		console.error('❌ Failed to initialize database:', error);

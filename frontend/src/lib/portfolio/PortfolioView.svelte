@@ -5,6 +5,7 @@
     import Skills from "./Skills.svelte";
     import Experience from "./Experience.svelte";
     import GitHubActivity from "./GitHubActivity.svelte";
+    import ContactCTA from "./ContactCTA.svelte";
     import ParticleNetwork from "../ParticleNetwork.svelte";
 
     let isDark = $state(true);
@@ -93,6 +94,7 @@
         <Projects />
         <Skills />
         <GitHubActivity />
+        <ContactCTA />
     </main>
 
     <footer class="footer">
