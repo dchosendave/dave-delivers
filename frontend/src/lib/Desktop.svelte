@@ -97,6 +97,12 @@
                     title: "ISS Live Tracker",
                     icon: "🛰️",
                 };
+            case "nasa-apod":
+                return {
+                    id: "nasa-apod",
+                    title: "NASA APOD",
+                    icon: "🔭",
+                };
         }
     }
 
@@ -208,6 +214,12 @@
             label: "ISS Tracker",
             icon: "🛰️",
             action: () => openWindow("iss-tracker"),
+        },
+        {
+            id: "nasa",
+            label: "NASA APOD",
+            icon: "🔭",
+            action: () => openWindow("nasa-apod"),
         },
     ];
 
@@ -402,6 +414,18 @@
             >
                 <span class="dock-icon">🛰️</span>
                 {#if openWindows.some((w) => w.id === "iss-tracker")}
+                    <div class="dock-indicator"></div>
+                {/if}
+            </button>
+
+            <button
+                class="dock-item"
+                class:active={openWindows.some((w) => w.id === "nasa-apod")}
+                onclick={() => openWindow("nasa-apod")}
+                title="NASA APOD"
+            >
+                <span class="dock-icon">🔭</span>
+                {#if openWindows.some((w) => w.id === "nasa-apod")}
                     <div class="dock-indicator"></div>
                 {/if}
             </button>

@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type {
-        WindowState,
-        WindowComponentProps,
-    } from "./types/window-types";
+    import type { Component } from "svelte";
+    import type { WindowState, WindowType } from "./types/window-types";
     import Terminal from "./Terminal.svelte";
     import ISSTracker from "./ISSTracker.svelte";
+    import NasaApod from "./NasaApod.svelte";
 
     let {
         window: windowData,
@@ -20,21 +19,25 @@
         onFocus: () => void;
     } = $props();
 
-    // Map window type to component
-    const componentMap = {
+    const componentMap: Record<WindowType, Component<any>> = {
         terminal: Terminal,
         "iss-tracker": ISSTracker,
+        "nasa-apod": NasaApod,
     };
 
-    const WindowComponent = componentMap[windowData.id];
+    const WindowComponent = $derived(componentMap[windowData.id]);
 </script>
 
 {#if !windowData.isMinimized}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         class="window-wrapper"
         class:active={isActive}
         style="z-index: {windowData.zIndex}"
         onclick={onFocus}
+        onkeydown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onFocus();
+        }}
         role="button"
         tabindex="0"
     >
