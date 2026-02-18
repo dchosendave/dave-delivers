@@ -1,32 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import SkillCard from "./SkillCard.svelte";
-
-    /**
-     * IMPORT ANIMATIONS
-     * Same pattern as Projects - fadeIn header, scaleIn cards
-     */
     import { fadeIn, scaleIn, staggerDelay } from "../animations.js";
+    import { getSkills } from "$lib/api/portfolio";
+    import type { Skill } from "$lib/types";
 
-    let skills: any[] = [];
+    let skills: Skill[] = [];
 
     onMount(async () => {
         try {
-            const res = await fetch("/api/skills");
-            skills = await res.json();
+            skills = await getSkills();
         } catch (err) {
-            console.error(err);
-            // Fallback data if API fails (for dev preview)
-            if (skills.length === 0) {
-                skills = [
-                    { name: "Svelte", proficiency: 95 },
-                    { name: "FastAPI", proficiency: 90 },
-                    { name: "Python", proficiency: 92 },
-                    { name: "TypeScript", proficiency: 85 },
-                    { name: "Three.js", proficiency: 75 },
-                    { name: "PostgreSQL", proficiency: 88 },
-                ];
-            }
+            console.error("Failed to load skills:", err);
         }
     });
 </script>

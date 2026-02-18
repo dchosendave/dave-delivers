@@ -1,55 +1,49 @@
-# Dave's Portfolio - Setup Guide
+# Dave's Portfolio - Full-Stack SvelteKit
 
-A retro terminal-style portfolio built with **Svelte 5** (frontend) and **FastAPI** (backend).
+A retro terminal-style portfolio built with **SvelteKit** (full-stack TypeScript) and **Turso** (cloud SQLite database).
 
 ## 📋 Prerequisites
 
-Make sure you have these installed:
+Make sure you have installed:
 - **Node.js** v18+ ([Download](https://nodejs.org/))
-- **Python** 3.10+ ([Download](https://www.python.org/))
 
-Verify installations:
+Verify installation:
 ```powershell
 node --version
 npm --version
-python --version
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Install Frontend Dependencies
+### 1. Install Dependencies
 ```powershell
 cd frontend
 npm install
 ```
 
-### 2. Install Backend Dependencies
+### 2. Set Up Environment Variables
+
+Copy the example file and configure for local development:
 ```powershell
-cd backend
-pip install -r requirements.txt
+cp .env.example .env
 ```
 
-### 3. Seed the Database
-```powershell
-cd backend
-python seed.py
+The default `.env` uses your local SQLite database:
+```bash
+TURSO_DB_URL=file:../database/portfolio.db
+TURSO_DB_AUTH_TOKEN=
 ```
 
-### 4. Run the Backend
+### 3. Run the Development Server
 ```powershell
-cd backend
-uvicorn app.main:app --reload
-```
-Backend will run at: `http://localhost:8000`
-
-### 5. Run the Frontend (in a separate terminal)
-```powershell
-cd frontend
 npm run dev
 ```
-Frontend will run at: `http://localhost:5173`
+
+The app will run at: **`http://localhost:5173`**
+
+That's it! The database will initialize automatically on first run.
 
 ---
 
@@ -79,29 +73,33 @@ Once the app is running, try these commands in the terminal UI:
 
 ```
 dave-delivers/
-├── frontend/              # Svelte 5 + Vite
+├── frontend/              # Full-stack SvelteKit app
 │   ├── src/
 │   │   ├── lib/
-│   │   │   └── Terminal.svelte   # Main terminal component
-│   │   ├── App.svelte
-│   │   ├── app.css              # CRT/retro styling
-│   │   └── main.js
-│   ├── public/
-│   │   └── LDD - Resume January 2026 V2.pdf
+│   │   │   ├── server/           # Server-only code
+│   │   │   │   ├── db/           # Database connection & models
+│   │   │   │   ├── repositories/ # Data access layer
+│   │   │   │   └── services/     # Business logic
+│   │   │   ├── Terminal.svelte
+│   │   │   └── portfolio/        # Portfolio components
+│   │   ├── routes/
+│   │   │   ├── api/              # API endpoints
+│   │   │   │   ├── execute/+server.ts
+│   │   │   │   ├── projects/+server.ts
+│   │   │   │   └── ...
+│   │   │   ├── desktop/          # Desktop view
+│   │   │   └── +page.svelte
+│   │   ├── hooks.server.ts       # Server initialization
+│   │   └── app.css               # CRT/retro styling
+│   ├── static/
+│   │   └── public/
+│   │       └── LDD - Resume January 2026 V2.pdf
+│   ├── .env                      # Environment variables
+│   ├── TURSO_SETUP.md            # Production deployment guide
 │   └── package.json
 │
-├── backend/               # FastAPI + SQLModel
-│   ├── app/
-│   │   ├── main.py       # FastAPI app
-│   │   ├── api.py        # Routes
-│   │   ├── models.py     # Database models
-│   │   ├── services.py   # Command processor
-│   │   └── database.py   # SQLModel setup
-│   ├── seed.py           # Database seeder
-│   └── requirements.txt
-│
 └── database/
-    └── portfolio.db      # SQLite database (auto-created)
+    └── portfolio.db              # SQLite database (local dev)
 ```
 
 ---
@@ -110,10 +108,12 @@ dave-delivers/
 
 - ✅ **Retro CRT Terminal UI** with scanlines, glow effects, and flicker animation
 - ✅ **Command History** - Use ↑/↓ arrow keys to navigate previous commands
-- ✅ **Live Backend Integration** - Real-time API calls to FastAPI
+- ✅ **Full-Stack TypeScript** - Type safety across frontend & backend
+- ✅ **Raw SQL Queries** - Direct database control with Turso client
 - ✅ **HTML Rendering** - Supports colored text, links, and formatting
 - ✅ **Responsive Design** - Works on all screen sizes
 - ✅ **Easter Eggs** - Hidden commands for fun
+- ✅ **Serverless Ready** - Deploy to Vercel with Turso cloud database
 
 ---
 
@@ -121,16 +121,18 @@ dave-delivers/
 
 ### Update Your Information
 
-Edit the seed data in `backend/seed.py` to customize:
-- Projects
-- Skills & proficiency levels
-- Contact information
-- Work experience
+The database is seeded from the existing `database/portfolio.db` file. To customize:
 
-Then re-run:
+**Option 1: Edit SQLite directly**
 ```powershell
-python seed.py
+# Use a SQLite browser (DB Browser for SQLite recommended)
+# Open: database/portfolio.db
+# Edit tables: project, skill, contact, experience
 ```
+
+**Option 2: Create a TypeScript seed script**
+
+See `TURSO_SETUP.md` for instructions on creating a seed script.
 
 ### Change Colors/Styling
 
@@ -141,36 +143,73 @@ python seed.py
 
 ## 🐛 Troubleshooting
 
-### Frontend can't connect to backend
-- **Error**: `Failed to connect to backend`
-- **Solution**: Make sure the backend is running at `http://localhost:8000`
-
 ### Database errors
-- **Solution**: Delete `database/portfolio.db` and run `python seed.py` again
+- **Solution**: Delete `database/portfolio.db` and the application will recreate tables on next startup
+- Check console for: `✅ Database initialized successfully`
 
 ### Port already in use
-- **Frontend**: Change port in `vite.config.js`
-- **Backend**: Use `uvicorn app.main:app --reload --port 8001`
+- **Solution**: Change port in `vite.config.js` or stop other Vite servers
+
+### Environment variable errors
+- **Solution**: Make sure `.env` file exists in `frontend/` directory
+- Verify `TURSO_DB_URL` is set (default: `file:../database/portfolio.db`)
 
 ---
 
-## 🚢 Deployment
+## 🚢 Production Deployment
 
-### Backend
-Deploy to services like:
-- **Render** (recommended for FastAPI)
-- **Railway**
-- **Heroku**
+### Deploy to Vercel (Recommended)
 
-Update CORS origins in `backend/app/main.py` to include your frontend URL.
+**Prerequisites:**
+1. Set up Turso cloud database (see `TURSO_SETUP.md`)
+2. Get Turso connection URL and auth token
 
-### Frontend
-Deploy to:
-- **Vercel** (recommended)
-- **Netlify**
-- **GitHub Pages**
+**Steps:**
 
-Update `API_URL` in `frontend/src/lib/Terminal.svelte` to your backend URL.
+1. **Push to GitHub**
+   ```powershell
+   git add .
+   git commit -m "Ready for deployment"
+   git push
+   ```
+
+2. **Connect Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Root directory: `frontend`
+
+3. **Add Environment Variables**
+   In Vercel dashboard, add:
+   - `TURSO_DB_URL` = `libsql://yourdb.turso.io`
+   - `TURSO_DB_AUTH_TOKEN` = your token
+
+4. **Deploy!**
+
+See `frontend/TURSO_SETUP.md` for detailed Turso setup instructions.
+
+---
+
+## 🏗️ Technology Stack
+
+**Frontend:**
+- Svelte 5 (Runes mode)
+- Vite
+- TypeScript (strict mode)
+- CSS3 (CRT effects)
+
+**Backend:**
+- SvelteKit (server routes)
+- TypeScript
+- Zod (runtime validation)
+
+**Database:**
+- Turso (cloud SQLite for production)
+- Local SQLite file (development)
+- `@libsql/client` (database driver)
+
+**Deployment:**
+- Vercel (frontend + API)
+- Turso (database)
 
 ---
 
@@ -185,3 +224,11 @@ Personal portfolio project by Dave Dichoson.
 - 📧 Email: lowiedave30@gmail.com
 - 🐙 GitHub: [@dchosendave](https://github.com/dchosendave)
 - 💼 LinkedIn: [Dave Dichoson](https://linkedin.com/in/davedichoson)
+
+---
+
+## 📚 Additional Documentation
+
+- **Turso Setup Guide**: See `frontend/TURSO_SETUP.md`
+- **API Documentation**: All endpoints are in `frontend/src/routes/api/`
+- **Migration Guide**: Full migration walkthrough available in project artifacts

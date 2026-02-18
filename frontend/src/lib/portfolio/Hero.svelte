@@ -1,35 +1,22 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
-    /**
-     * STEP 1: Import our animation utilities
-     * These are custom Svelte actions we just created
-     */
     import { fadeIn, slideInLeft, staggerDelay } from "../animations.js";
+    import { getContacts } from "$lib/api/portfolio";
+    import { CONTACT_LABELS } from "$lib/utils/constants";
+    import type { Contact } from "$lib/types";
 
-    // State for contacts
-    let contacts: any[] = [];
-
-    // Map contact types to icons (simple text fallback, or use lucide-svelte if you have it)
-    const icons = {
-        github: "GitHub",
-        linkedin: "LinkedIn",
-        gmail: "Email",
-        whatsapp: "WhatsApp",
-        viber: "Viber",
-    };
+    let contacts: Contact[] = [];
 
     onMount(async () => {
         try {
-            const res = await fetch("/api/contacts");
-            contacts = await res.json();
+            contacts = await getContacts();
         } catch (error) {
             console.error("Failed to load contacts", error);
         }
     });
 
     function getLabel(type: string): string {
-        return icons[type as keyof typeof icons] || type;
+        return CONTACT_LABELS[type] ?? type;
     }
 </script>
 

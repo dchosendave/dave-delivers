@@ -1,22 +1,16 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
-    /**
-     * IMPORT ANIMATIONS
-     * - fadeIn: For header
-     * - slideInLeft: Perfect for timeline items!
-     *   (Makes them slide in from left, following the timeline flow)
-     */
     import { fadeIn, slideInLeft, staggerDelay } from "../animations.js";
+    import { getExperiences } from "$lib/api/portfolio";
+    import type { Experience } from "$lib/types";
 
-    let experiences: any[] = [];
+    let experiences: Experience[] = [];
 
     onMount(async () => {
         try {
-            const res = await fetch("/api/experiences");
-            experiences = await res.json();
+            experiences = await getExperiences();
         } catch (err) {
-            console.error(err);
+            console.error("Failed to load experiences:", err);
         }
     });
 </script>

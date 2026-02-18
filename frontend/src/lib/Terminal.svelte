@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { executeCommand as apiExecuteCommand } from "$lib/api/terminal";
 
   interface TerminalLine {
     type: string;
@@ -17,7 +18,7 @@
   let isProcessing = $state<boolean>(false);
   let isTyping = $state<boolean>(false);
 
-  const API_URL = "/api"; // SvelteKit API routes (no CORS needed)
+  // API calls go through $lib/api/terminal — no raw fetch needed here
   const TYPING_SPEED = 8;
   const TYPING_ENABLED = true;
 
@@ -154,19 +155,7 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
     currentCommand = "";
 
     try {
-      const response = await fetch(`${API_URL}/execute`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ command: cmd }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await apiExecuteCommand(cmd);
 
       await addOutput("response", data.output, {
         user: data.user,
@@ -175,7 +164,7 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
     } catch (error) {
       await addOutput(
         "error",
-        `<span style="color: #ff4444;">Error: Failed to connect to backend. Make sure the server is running at ${API_URL}</span>`,
+        `<span style="color: #ff4444;">Error: Failed to execute command. Is the dev server running?</span>`,
       );
     } finally {
       isProcessing = false;

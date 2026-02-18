@@ -87,7 +87,7 @@
         transform: translateX(-50%);
         width: 90%;
         max-width: 900px;
-        height: 85vh;
+        height: 70vh;
         max-height: 700px;
         background: rgba(20, 20, 30, 0.95);
         border: 1px solid rgba(255, 255, 255, 0.1);

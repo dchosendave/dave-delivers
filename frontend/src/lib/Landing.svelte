@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
     import ParticleNetwork from "./ParticleNetwork.svelte";
 
     let showName = $state(false);
@@ -11,7 +12,7 @@
     // Theme state
     let isDark = $state(true);
 
-    let roles = $state([]);
+    let roles = $state<string[]>([]);
     let currentRoleIndex = 0;
     let displayedTagline = $state("");
     let isDeleting = false;
@@ -99,6 +100,12 @@
     function typeLoop() {
         const fullText = roles[currentRoleIndex];
 
+        // Guard: roles may be empty on first call before onMount populates them
+        if (!fullText) {
+            setTimeout(typeLoop, 200);
+            return;
+        }
+
         if (isDeleting) {
             displayedTagline = fullText.substring(
                 0,
@@ -125,7 +132,9 @@
         setTimeout(typeLoop, typingSpeed);
     }
 
-    function handleMouseMove(e) {
+    function handleMouseMove(
+        e: MouseEvent & { currentTarget: HTMLDivElement },
+    ) {
         // 1. Interactive Background Logic
         const { clientX, clientY, currentTarget } = e;
         const { width, height } = currentTarget.getBoundingClientRect();
@@ -153,12 +162,6 @@
             localStorage.setItem("theme", "light");
         }
     }
-
-    /**
-     * NAVIGATION FUNCTION - Updated for URL routing
-     * Now uses the router to change URLs properly
-     */
-    import { goto } from "$app/navigation";
 
     function navigateTo(view: string) {
         const paths: Record<string, string> = {
