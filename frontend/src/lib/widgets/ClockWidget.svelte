@@ -1,11 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    let hours = $state(0);
-    let minutes = $state(0);
-    let seconds = $state(0);
-    let dateString = $state("");
-    let greeting = $state("");
+    // BEFORE: 5 separate $state vars → 5 Svelte invalidations per tick
+    // AFTER:  1 $state object       → 1 Svelte invalidation per tick
+    // C# equivalent: replacing 5 public properties with a single DTO object
+    // that gets swapped atomically — one PropertyChanged instead of five.
+    let time = $state({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        dateString: "",
+        greeting: "",
+    });
 
     onMount(() => {
         updateTime();
@@ -15,32 +21,39 @@
 
     function updateTime() {
         const now = new Date();
-        hours = now.getHours();
-        minutes = now.getMinutes();
-        seconds = now.getSeconds();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const s = now.getSeconds();
 
-        dateString = now.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-        });
-
-        // Time-of-day greeting
-        if (hours < 12) greeting = "Good Morning";
-        else if (hours < 17) greeting = "Good Afternoon";
+        let greeting: string;
+        if (h < 12) greeting = "Good Morning";
+        else if (h < 17) greeting = "Good Afternoon";
         else greeting = "Good Evening";
+
+        // Single assignment → single Svelte reactivity notification
+        time = {
+            hours: h,
+            minutes: m,
+            seconds: s,
+            dateString: now.toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+            }),
+            greeting,
+        };
     }
 
     // Analog clock hand rotations
-    let hourDeg = $derived(((hours % 12) + minutes / 60) * 30);
-    let minuteDeg = $derived((minutes + seconds / 60) * 6);
-    let secondDeg = $derived(seconds * 6);
+    let hourDeg = $derived(((time.hours % 12) + time.minutes / 60) * 30);
+    let minuteDeg = $derived((time.minutes + time.seconds / 60) * 6);
+    let secondDeg = $derived(time.seconds * 6);
 
     // Digital time display
     let digitalTime = $derived(
-        `${(hours % 12 || 12).toString()}:${minutes.toString().padStart(2, "0")}`,
+        `${(time.hours % 12 || 12).toString()}:${time.minutes.toString().padStart(2, "0")}`,
     );
-    let ampm = $derived(hours >= 12 ? "PM" : "AM");
+    let ampm = $derived(time.hours >= 12 ? "PM" : "AM");
 </script>
 
 <div class="clock-widget">
@@ -77,8 +90,8 @@
         <span class="ampm">{ampm}</span>
     </div>
 
-    <p class="clock-date">{dateString}</p>
-    <p class="clock-greeting">{greeting}</p>
+    <p class="clock-date">{time.dateString}</p>
+    <p class="clock-greeting">{time.greeting}</p>
 </div>
 
 <style>
@@ -90,10 +103,15 @@
         padding: 1.25rem;
         width: 180px;
         background: rgba(255, 255, 255, 0.06);
-        backdrop-filter: blur(24px);
+        /* Reduced from 24px → 12px: visually near-identical at widget scale,
+           but halves the GPU work for backdrop-filter compositing */
+        backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 1.25rem;
         user-select: none;
+        /* Promote to own compositing layer so backdrop-filter doesn't
+           cascade repaints to sibling elements */
+        will-change: transform;
     }
 
     :global(:root.light) .clock-widget {

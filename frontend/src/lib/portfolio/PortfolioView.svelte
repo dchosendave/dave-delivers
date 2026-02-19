@@ -227,7 +227,7 @@
     /* ===== MAIN CONTENT ===== */
     .content-main {
         position: relative;
-        z-index: 10;
+        z-index: 1; /* Canvas is at 0 — this is all we need to sit above it */
         max-width: 80rem;
         margin: 0 auto;
         padding: 5rem 1.5rem;
