@@ -475,6 +475,10 @@
             );
         animation: gradientMove 20s ease-in-out infinite;
         z-index: 0;
+        /* Promote to own GPU compositing layer — prevents the infinite animation
+           from triggering repaints on other page elements (huge win on integrated graphics) */
+        will-change: transform;
+        transform: translateZ(0);
     }
 
     :global(:root.light) .wallpaper {

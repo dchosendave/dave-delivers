@@ -95,7 +95,9 @@
         background: rgba(20, 20, 30, 0.95);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        backdrop-filter: blur(40px);
+        /* Reduced from 40px → 20px: still a strong blur, but composites at half the GPU cost.
+           Each open window with its own backdrop-filter stacks; this keeps the total manageable. */
+        backdrop-filter: blur(20px);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         display: flex;
         flex-direction: column;
@@ -105,6 +107,8 @@
             border-color 0.2s,
             opacity 0.2s;
         opacity: 0.85;
+        /* Each window gets its own GPU compositing layer */
+        will-change: transform;
     }
 
     .window-wrapper.active {
