@@ -597,4 +597,53 @@
             opacity: 0.7;
         }
     }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .content {
+            padding: 1.5rem;
+            gap: 1rem;
+        }
+
+        .cta-container {
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .cta-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        .perspective-container {
+            margin-top: 2rem;
+            max-width: 90vw;
+        }
+
+        .status-pill {
+            right: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 1rem;
+        }
+
+        .status-pill.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .theme-toggle {
+            top: 1rem;
+            right: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .status-pill {
+            font-size: 0.7rem;
+            padding: 0.375rem 0.75rem;
+            gap: 0.375rem;
+        }
+    }
 </style>

@@ -246,4 +246,34 @@
         font-size: 0.875rem;
         color: var(--color-text-secondary);
     }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .content-main {
+            padding: 4rem 1rem;
+            gap: 5rem;
+        }
+
+        .back-button {
+            top: 1rem;
+            left: 0.75rem;
+        }
+
+        .theme-toggle {
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .footer {
+            padding: 2rem 0;
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .content-main {
+            padding: 3.5rem 0.75rem;
+            gap: 4rem;
+        }
+    }
 </style>

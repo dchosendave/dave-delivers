@@ -243,4 +243,34 @@
         text-transform: uppercase;
         letter-spacing: 0.08em;
     }
+
+    @media (max-width: 768px) {
+        .clock-widget {
+            width: 150px;
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        .clock-face {
+            width: 100px;
+            height: 100px;
+        }
+
+        .hour-hand {
+            height: 22px;
+        }
+        .minute-hand {
+            height: 32px;
+        }
+        .second-hand {
+            height: 35px;
+        }
+
+        .digital-time {
+            font-size: 1.25rem;
+        }
+        .clock-date {
+            font-size: 0.6rem;
+        }
+    }
 </style>
