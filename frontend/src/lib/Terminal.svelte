@@ -287,12 +287,22 @@ Type <span style="color: #00ff00;">help</span> to see available commands.`,
 <style>
   .terminal-container {
     padding: 20px;
-    height: 70vh;
-    max-height: 600px;
+    flex: 1;
     overflow-y: auto;
     font-family: var(--terminal-font);
     line-height: 1.6;
     cursor: text;
+  }
+
+  @media (max-width: 768px) {
+    .terminal-container {
+      padding: 12px;
+      font-size: 0.875rem;
+    }
+
+    .prompt {
+      font-size: 0.75rem;
+    }
   }
 
   /* Custom Scrollbar */

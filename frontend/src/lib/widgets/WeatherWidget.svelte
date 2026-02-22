@@ -251,4 +251,25 @@
         margin: 0;
         font-weight: 400;
     }
+
+    @media (max-width: 768px) {
+        .weather-widget {
+            width: 150px;
+            padding: 1rem;
+            gap: 0.375rem;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+        }
+        .temp-value {
+            font-size: 1.75rem;
+        }
+        .weather-desc {
+            font-size: 0.675rem;
+        }
+        .detail-value {
+            font-size: 0.625rem;
+        }
+    }
 </style>

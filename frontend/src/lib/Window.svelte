@@ -194,11 +194,22 @@
         flex-direction: column;
     }
 
-    /* Responsive */
+    /* Responsive — full-screen on mobile */
     @media (max-width: 768px) {
         .window-wrapper {
-            width: 95%;
-            height: 90vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            transform: none;
+            border-radius: 0;
+            z-index: 200;
+        }
+
+        .window-chrome {
+            padding: 0.5rem 0.75rem;
         }
     }
 </style>

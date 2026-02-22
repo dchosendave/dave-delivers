@@ -224,10 +224,23 @@
     ];
 
     let selectedIcon = $state<string | null>(null);
+    let isTouchDevice = $state(false);
+
+    onMount(() => {
+        // Detect touch device once
+        isTouchDevice =
+            "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    });
 
     function handleIconClick(icon: DesktopIcon) {
         selectedIcon = icon.id;
         icon.action();
+    }
+
+    /** On touch devices, single-tap opens the icon (double-tap is unreliable). */
+    function handleIconTap(e: TouchEvent, icon: DesktopIcon) {
+        e.preventDefault(); // Prevent the subsequent mouse event
+        handleIconClick(icon);
     }
 
     function handleDesktopClick(e: MouseEvent) {
@@ -297,6 +310,7 @@
                         class:selected={selectedIcon === icon.id}
                         ondblclick={() => handleIconClick(icon)}
                         onclick={() => (selectedIcon = icon.id)}
+                        ontouchend={(e) => handleIconTap(e, icon)}
                         title={icon.label}
                     >
                         <span class="desktop-icon-img">{icon.icon}</span>
@@ -546,6 +560,22 @@
         border-bottom: 1px solid var(--color-glass-border);
     }
 
+    @media (max-width: 480px) {
+        .menu-bar {
+            padding: 0.5rem 0.75rem;
+        }
+        .menu-brand {
+            font-size: 0.8rem;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .menu-time {
+            font-size: 0.75rem;
+        }
+    }
+
     .menu-left {
         display: flex;
         align-items: center;
@@ -710,6 +740,12 @@
         }
     }
 
+    @media (max-width: 480px) {
+        .desktop-widgets {
+            display: none;
+        }
+    }
+
     /* ===== DESKTOP ICONS (macOS-style) ===== */
     .desktop-icons {
         position: absolute;
@@ -817,6 +853,22 @@
         }
     }
 
+    @media (max-width: 480px) {
+        .desktop-icons {
+            grid-template-columns: 1fr;
+            right: 0.5rem;
+            top: 0.5rem;
+        }
+
+        .desktop-icon {
+            width: 60px;
+        }
+
+        .desktop-icon-img {
+            font-size: 2rem;
+        }
+    }
+
     /* ===== DOCK ===== */
     .dock {
         position: fixed;
@@ -838,6 +890,64 @@
         backdrop-filter: blur(20px);
         border-radius: 20px;
         border: 1px solid var(--color-glass-border);
+        max-width: 100vw;
+        overflow-x: auto;
+        /* Hide scrollbar for aesthetics */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .dock-container::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    @media (max-width: 768px) {
+        .dock-container {
+            gap: 0.25rem;
+            padding: 0.375rem 0.5rem;
+        }
+
+        .dock-item {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+        }
+
+        .dock-icon {
+            font-size: 1.35rem;
+        }
+
+        .dock-divider {
+            height: 28px;
+            margin: 0 0.125rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dock {
+            padding: 0.5rem;
+        }
+
+        .dock-container {
+            gap: 0.125rem;
+            padding: 0.25rem 0.375rem;
+            border-radius: 16px;
+        }
+
+        .dock-item {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 10px;
+        }
+
+        .dock-icon {
+            font-size: 1.2rem;
+        }
+
+        .dock-divider {
+            height: 24px;
+        }
     }
 
     .dock-item {
