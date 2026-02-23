@@ -7,7 +7,7 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { NASA_API_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 interface ApodResponse {
     title: string;
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async () => {
     }
 
     try {
-        const apiKey = NASA_API_KEY || 'DEMO_KEY';
+        const apiKey = env.NASA_API_KEY || 'DEMO_KEY';
         const res = await fetch(
             `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`
         );
